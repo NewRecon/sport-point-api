@@ -1,0 +1,12 @@
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/java:3-25-trixie
+    volumes:
+      - ../..:/workspaces:cached
+    networks:
+      - sport_point_network
+    tty: true
+    stdin_open: true
+
+include:
+  - ../docker-compose.yml

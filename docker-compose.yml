@@ -1,0 +1,60 @@
+services:
+  postgres-auth:
+    image: postgres:18.4
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-auth-data:/var/lib/postgresql
+    networks:
+      - sport_point_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d authdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-profile:
+    image: postgres:18.4
+    container_name: profile-db
+    environment:
+      POSTGRES_DB: profiledb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-profile-data:/var/lib/postgresql
+    networks:
+      - sport_point_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d profiledb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres-event:
+    image: postgres:18.4
+    container_name: event-db
+    environment:
+      POSTGRES_DB: eventdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-event-data:/var/lib/postgresql
+    networks:
+      - sport_point_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d eventdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  sport_point_network:
+    driver: bridge
+
+volumes:
+  postgres-auth-data:
+  postgres-profile-data:
+  postgres-event-data:
