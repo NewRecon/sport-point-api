@@ -6,31 +6,22 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.auth_service.entity.User;
 import ru.newrecon.auth_service.exception.UnauthorizedException;
-import ru.newrecon.auth_service.repository.UserRepository;
 import ru.newrecon.auth_service.security.JwtProvider;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthService {
     
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByName(username);
-    }
 
     public String authenticate(String username, String password) {
 
@@ -47,7 +38,7 @@ public class AuthService implements UserDetailsService {
             throw new UnauthorizedException("Непредвиденная ошибка при аутентификации пользователя");
         }
 
-        User user = (User) loadUserByUsername(username);
+        User user = (User) authentication.getPrincipal();
 
         return jwtProvider.generateToken(user); 
     }
@@ -59,7 +50,7 @@ public class AuthService implements UserDetailsService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(Set.of());
 
-        User user = userRepository.save(newUser);
+        User user = (User) userService.save(newUser);
 
         return jwtProvider.generateToken(user); 
     }

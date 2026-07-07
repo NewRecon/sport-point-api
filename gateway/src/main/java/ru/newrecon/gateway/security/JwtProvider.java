@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import ru.newrecon.gateway.enums.Role;
@@ -24,18 +23,6 @@ public class JwtProvider {
 
     @Value("${jwt.key}")
     private String secretKey;
-
-    public String getSubject(String token) {
-        String username = parseClaims(token)
-                .getPayload()
-                .getSubject();
-
-        if (username == null || username.isBlank()) {
-            throw new JwtException("Отсутствует \"subject\" в токене");
-        }
-
-        return username;
-    }
 
     public <T> T findClaim(String token, ChillClaim<T> chillClaim) {
         Claims body = parseClaims(token).getPayload();

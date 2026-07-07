@@ -1,4 +1,4 @@
-package ru.newrecon.gateway.enums;
+package ru.newrecon.profile_service.enums;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;

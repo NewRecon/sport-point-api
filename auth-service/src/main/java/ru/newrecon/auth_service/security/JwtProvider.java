@@ -30,7 +30,6 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .signWith(key)
-                .subject(user.getUsername())
                 .claim(ChillClaim.USER_ID.name(), user.getId())
                 .claim(ChillClaim.ROLES.name(), authorities)
                 .expiration(exp)

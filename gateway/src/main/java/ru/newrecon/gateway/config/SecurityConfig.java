@@ -32,8 +32,7 @@ public class SecurityConfig {
                     })
                 )
                 .authorizeExchange(auth -> auth
-                    .pathMatchers("/api/v1/auth/*").permitAll()
-                    .anyExchange().authenticated()
+                    .anyExchange().permitAll()
                 )
                 .build();
     }

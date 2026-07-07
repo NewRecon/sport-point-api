@@ -43,13 +43,11 @@ public class JwtAuthenticationFilter implements WebFilter {
         try {
             String token = authHeader.substring(7);
 
-            String username = jwtProvider.getSubject(token);
             UUID userId = jwtProvider.findClaim(token, ChillClaim.USER_ID);
             Set<Role> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
 
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header("X-UserId", userId.toString())
-                    .header("X-Username", username)
                     .header("X-Roles", roles.toString())
                     .build();
 

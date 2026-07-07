@@ -3,6 +3,7 @@ package ru.newrecon.profile_service.controller;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ import ru.newrecon.profile_service.mapper.ProfileMapper;
 import ru.newrecon.profile_service.service.ProfileService;
 
 @RestController
-@RequestMapping("api/v1/profile")
+@RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -46,7 +47,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}")
-    public UpdateProfileRs update(@PathVariable UUID id, @RequestBody UpdateProfileRq request) {
+    public UpdateProfileRs updateById(@PathVariable UUID id, @RequestBody UpdateProfileRq request) {
         return profileMapper.mapToUpdateProfileRs(
             profileService.save(
                 profileMapper.map(request)
@@ -60,4 +61,12 @@ public class ProfileController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping
+    public GetProfileRs get(@AuthenticationPrincipal UUID id) {
+        return profileMapper.mapToGetProfileRs(
+            profileService.getById(id)
+        );
+    }
+    
 }

@@ -8,5 +8,4 @@ import ru.newrecon.profile_service.entity.Profile;
 
 public interface ProfileRepository extends JpaRepository<Profile, UUID>{
 
-    boolean existByName(String name);
 }

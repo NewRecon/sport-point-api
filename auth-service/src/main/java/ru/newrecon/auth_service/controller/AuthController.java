@@ -13,7 +13,7 @@ import ru.newrecon.auth_service.dto.RegisterRs;
 import ru.newrecon.auth_service.service.AuthService;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
