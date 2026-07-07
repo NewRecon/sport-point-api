@@ -25,3 +25,5 @@ spring:
                     predicates:
                       - Path=/api/v1/profile/**
         
+jwt:
+    key: my-super-secret-test-key-for-jwt

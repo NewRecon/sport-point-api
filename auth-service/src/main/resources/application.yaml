@@ -13,3 +13,7 @@ spring:
         hibernate:
             ddl-auto: create-drop
         show-sql: true
+
+jwt:
+    key: my-super-secret-test-key-for-jwt
+    expiration: 43200000
