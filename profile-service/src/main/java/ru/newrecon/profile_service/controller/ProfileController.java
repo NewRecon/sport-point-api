@@ -50,7 +50,7 @@ public class ProfileController {
     public UpdateProfileRs updateById(@PathVariable UUID id, @RequestBody UpdateProfileRq request) {
         return profileMapper.mapToUpdateProfileRs(
             profileService.save(
-                profileMapper.map(request)
+                profileMapper.map(id, request)
             )
         );
     }

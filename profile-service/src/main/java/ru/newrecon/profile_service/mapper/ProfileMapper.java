@@ -1,5 +1,7 @@
 package ru.newrecon.profile_service.mapper;
 
+import java.util.UUID;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -17,8 +19,7 @@ public interface ProfileMapper {
     @Mapping(target = "id", ignore = true)
     Profile map(CreateProfileRq source);
 
-    @Mapping(target = "id", ignore = true)
-    Profile map(UpdateProfileRq source);
+    Profile map(UUID id, UpdateProfileRq source);
 
     CreateProfileRs mapToCreateProfileRs(Profile source);
 
