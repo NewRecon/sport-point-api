@@ -2,6 +2,7 @@ package ru.newrecon.gateway.security;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -46,9 +47,13 @@ public class JwtAuthenticationFilter implements WebFilter {
             UUID userId = jwtProvider.findClaim(token, ChillClaim.USER_ID);
             Set<Role> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
 
+            String rolesHeader = roles.isEmpty() ? null : roles.stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(","));
+
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header("X-UserId", userId.toString())
-                    .header("X-Roles", roles.toString())
+                    .header("X-Roles", rolesHeader)
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
