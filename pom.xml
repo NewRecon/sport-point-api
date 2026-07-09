@@ -20,6 +20,7 @@
         <module>auth-service</module>
         <module>event-service</module>
         <module>profile-service</module>
+        <module>subscription-service</module>
         <module>gateway</module>
     </modules>
 

@@ -1,7 +1,6 @@
-package ru.newrecon.event_service.entity;
+package ru.newrecon.subscription_service.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -14,14 +13,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class Event {
+public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private double latitude;
-    private double longitude;
-    private String description;
-    private LocalDateTime startAt;
-    private LocalTime duration;
-    private UUID ownerId;
+    private UUID userId;
+    private UUID eventId;
+    private LocalDateTime createAt;
 }

@@ -1,0 +1,15 @@
+server:
+  port: 8084
+
+spring:
+    application:
+        name: subscription-service
+    datasource:
+        url: jdbc:postgresql://event-db:5432/eventdb
+        username: postgres
+        password: postgres
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: create-drop
+        show-sql: true

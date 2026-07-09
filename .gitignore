@@ -6,6 +6,7 @@ target/
 .env
 spec/
 *.http
+project.md
 
 ### STS ###
 .apt_generated
