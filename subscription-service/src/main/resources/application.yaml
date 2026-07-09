@@ -13,3 +13,7 @@ spring:
         hibernate:
             ddl-auto: create-drop
         show-sql: true
+    data:
+        redis:
+            host: redis
+            port: 6379

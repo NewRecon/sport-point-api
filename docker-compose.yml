@@ -50,6 +50,20 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:8.8.0
+    container_name: redis
+    volumes:
+      - redis-data:/data
+    networks:
+      - sport_point_network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   sport_point_network:
     driver: bridge
@@ -58,3 +72,4 @@ volumes:
   postgres-auth-data:
   postgres-profile-data:
   postgres-event-data:
+  redis-data:
