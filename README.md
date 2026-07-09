@@ -24,7 +24,7 @@
 | **Брокер сообщений** | Apache Kafka|
 | **Инфраструктура** | Docker, Docker Compose |
 | **Безопасность** | Spring Security, JWT|
-| **Архитектурные паттерны** | API Gateway, Event-Driven Architecture, Saga |
+| **Архитектурные паттерны** | API Gateway, Event-Driven Architecture, Saga (хареография) |
 
 ---
 
@@ -71,7 +71,7 @@ graph TB
 | **Auth Service** | Регистрация, аутентификация, выпуск JWT, CRUD пользователей | `auth_db` (PostgreSQL) | `/register`, `/login`, `/users/**` |
 | **Profile Service** | Публичные профили, история активности, подписки пользователя | `profile_db` (PostgreSQL) | `/profiles/**` |
 | **Event Service** | Создание и управление ивентами, метаданные мероприятий | `events_db` (PostgreSQL) | `/events/**` |
-| **Subscription Service** | Подписки на ивенты, владение "местами", билетами | `events_db` (PostgreSQL) + **Redis** | `/subscribe`, `/subscriptions/**` |
+| **Subscription Service** | Подписки на ивенты, владение "местами", билетами | `events_db` (PostgreSQL) + **Redis** | `/subscriptions/**` |
 
 ---
 
@@ -138,7 +138,7 @@ graph TD
         direction LR
         T1[event-events]
         T2[sub-events]
-        T3[user-events]
+        T3[profile-events]
     end
     
     %% Публикации в шину
