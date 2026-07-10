@@ -24,7 +24,8 @@
 | **Брокер сообщений** | Apache Kafka|
 | **Инфраструктура** | Docker, Docker Compose |
 | **Безопасность** | Spring Security, JWT|
-| **Архитектурные паттерны** | API Gateway, Event-Driven Architecture, Saga (хареография) |
+| **Логирование** | Slf4j|
+| **Архитектурные паттерны** | API Gateway, Event-Driven Architecture, Saga (хореография) |
 
 ---
 
@@ -80,18 +81,18 @@ graph TB
 ### `auth_db` (Auth Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
-| **`users`** | `id` (PK), `username`, `password_hash`, `role`, `created_at` | Учётные записи пользователей |
+| **`users`** | `id` (PK), `username`, `password_hash`, `role`, `created_at`, `status` | Учётные записи пользователей |
 
 ###  `profile_db` (Profile Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
-| **`profiles`** | `id` (PK), `user_id` (FK), `bio`, `avatar_url`, `location` | Публичные профили с информацией о себе |
-| **`subscriptions_history`** | `id` (PK), `user_id`, `event_id`, `subscribed_at` | История активности пользователя (для отображения в профиле) |
+| **`profiles`** | `id` (PK), `user_id` (FK), `bio`, `avatar_url`, `location`, `status` | Публичные профили с информацией о себе |
+| **`subscriptions_history`** | `id` (PK), `user_id`, `event_id`, `subscribed_at`, `participant_role` | История активности пользователя (для отображения в профиле) |
 
 ### `events_db` (Event Service + Subscription Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
-| **`events`** | `id` (PK), `title`, `description`, `date`, `location_lat`, `location_lng`, `organizer_id`, `total_participants` | Метаданные ивентов с координатами для карты |
+| **`events`** | `id` (PK), `title`, `description`, `date`, `location_lat`, `location_lng`, `organizer_id`, `total_participants`, `status` | Метаданные ивентов с координатами для карты |
 | **`subscriptions`** | `id` (PK), `user_id`, `event_id`, `subscribed_at` | Факты подписок на ивенты |
 
 ### Redis (только Subscription Service)
@@ -134,7 +135,7 @@ graph TD
     Sub --> Redis
     
     %% Асинхронный путь (через Kafka-шину)
-    subgraph KafkaBus["📨 Apache Kafka — асинхронная шина событий"]
+    subgraph KafkaBus["Apache Kafka — асинхронная шина событий"]
         direction LR
         T1[event-events]
         T2[sub-events]
@@ -175,7 +176,7 @@ graph TD
 ### Бизнес-сценарии
 
 #### Сценарий 1: Создание ивента на карте
-REST-запрос обрабатывается синхронно. Счётчик мест в Redis не инициализируется на этом этапе — он будет создан лениво при первой подписке.
+REST-запрос обрабатывается синхронно. Счётчик мест в Redis инициализируется через Subscription Service. В профиле создателя отображается новая подпистка с ролью "OWNER".
 
 ```mermaid
 sequenceDiagram
@@ -184,15 +185,19 @@ sequenceDiagram
     participant ES as Event Service
     participant DB as PostgreSQL (events_db)
     participant K as Kafka
+    participant PS as Profile Service
     participant SS as Subscription Service
+    participant R as Redis
 
     C->>GW: POST /events (JWT)
     GW->>ES: Forward Request
     ES->>DB: INSERT INTO events
+    ES-)K: Publish: EventCreatedEvent (async)
     ES-->>GW: 201 Created
     GW-->>C: 201 Created + event data
-    ES-)K: Publish: EventCreatedEvent (async)
+    K-)PS: Consume Event
     K-)SS: Consume Event
+    SS->>R: INCR (создание счётчика мест)
 ```
 
 #### Сценарий 2: Подписка пользователя на ивент
@@ -217,9 +222,9 @@ sequenceDiagram
         GW-->>C: 400 "No subs available"
     else Место есть
         SS->>DB: INSERT INTO subs (CONFIRMED)
+        SS-)K: Publish: UserSubscribedEvent {userId, eventId}
         SS-->>GW: 200 OK
         GW-->>C: 200 OK
-        SS-)K: Publish: UserSubscribedEvent {userId, eventId}
         K-)PS: Consume Event
     end
 ```
@@ -241,9 +246,9 @@ sequenceDiagram
     C->>GW: DELETE /profiles/{id} (JWT)
     GW->>PS: Forward Request
     PS->>DB1: Soft delete user + history
+    PS-)K: Publish: UserDeletedEvent {userId}
     PS-->>GW: 200 OK
     GW-->>C: 200 OK
-    PS-)K: Publish: UserDeletedEvent {userId}
     K-)SS: Consume Event
     SS->>DB2: SELECT subs WHERE user_id = ?
     loop Для каждого активного билета
@@ -261,18 +266,20 @@ sequenceDiagram
     participant ES as Event Service
     participant DB1 as events_db
     participant K as Kafka
-    participant PS as Profile Service
+    participant SS as Subscription Service
     participant R as Redis
+    participant PS as Profile Service
     participant DB2 as profile_db
 
     C->>GW: DELETE /events/{id} (JWT)
     GW->>ES: Forward Request
-    ES->>DB1: DELETE FROM events WHERE id = ?
-    ES->>DB1: DELETE FROM sub WHERE event_id = ?
+    ES->>DB1: Soft delete events
+    ES->>DB1: Soft delete sub
+    ES-)K: Publish: EventDeletedEvent {eventId}
     ES-->>GW: 200 OK
     GW-->>C: 200 OK
-    ES-)K: Publish: EventDeletedEvent {eventId}
+    K-)SS: Consume Event
+    SS->>R: delete event cache
     K-)PS: Consume Event
-    PS->>R: delete event cash
-    PS->>DB2: DELETE FROM subscriptions_history WHERE event_id = ?
+    PS->>DB2: Soft delete subscriptions_history
 ```

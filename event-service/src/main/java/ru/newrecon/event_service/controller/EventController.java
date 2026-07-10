@@ -41,14 +41,14 @@ public class EventController {
     @PostMapping
     public CreateEventRs create(@RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(
-            eventMapper.map(request)
+           eventService.create(eventMapper.map(request))
         );
     }
 
     @PutMapping("/{id}")
     public UpdateEventRs updateById(@PathVariable UUID id, @RequestBody UpdateEventRq request) {
         return eventMapper.mapToUpdateEventRs(
-            eventMapper.map(id, request)
+            eventService.save(eventMapper.map(id, request))
         );
     }
 

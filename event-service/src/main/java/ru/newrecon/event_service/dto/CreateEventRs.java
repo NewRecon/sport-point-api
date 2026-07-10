@@ -11,5 +11,6 @@ public record CreateEventRs(
     String description,
     LocalDateTime startAt,
     LocalTime duration,
-    UUID ownerId
+    UUID ownerId,
+    int totalParticipants
 ) {}

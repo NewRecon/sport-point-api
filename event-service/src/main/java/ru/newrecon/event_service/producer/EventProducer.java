@@ -11,7 +11,11 @@ public class EventProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void send(String message) {
-        kafkaTemplate.send("event-events", message);
+    public void sendCreate(String message) {
+        kafkaTemplate.send("create-event-events", message);
+    }
+
+    public void sendDelete(String message) {
+        kafkaTemplate.send("delete-event-events", message);
     }
 }

@@ -14,7 +14,7 @@ public class CounterService {
     private final RedisConnectionFactory connectionFactory;
     private final RedisTemplate<String, Long> redisTemplate;
 
-    public long setCounterValue(String key, long value) {
+    public long setCounterValue(String key, int value) {
         RedisAtomicLong counter = new RedisAtomicLong(key, connectionFactory);
         counter.set(value);
         return counter.get();

@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Entity;

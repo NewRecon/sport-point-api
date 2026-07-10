@@ -24,4 +24,5 @@ public class Event {
     private LocalDateTime startAt;
     private LocalTime duration;
     private UUID ownerId;
+    private int totalParticipants;
 }
