@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
+import ru.newrecon.subscription_service.entity.enums.Status;
 
 @Getter
 @Setter
@@ -25,4 +26,6 @@ public class Subscription {
     private LocalDateTime createAt;
     @Enumerated(EnumType.STRING)
     private ParticipantRole participantRole;
+    @Enumerated(EnumType.STRING)
+    private Status status; 
 }

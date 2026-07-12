@@ -18,6 +18,7 @@ import ru.newrecon.subscription_service.dto.CreateSubscriptionRq;
 import ru.newrecon.subscription_service.dto.CreateSubscriptionRs;
 import ru.newrecon.subscription_service.dto.GetSubscriptionRs;
 import ru.newrecon.subscription_service.dto.SubscribeRq;
+import ru.newrecon.subscription_service.dto.UnsubscribeRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRs;
 import ru.newrecon.subscription_service.mapper.SubscriptionMapper;
@@ -68,6 +69,13 @@ public class SubscriptionController {
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribe(@AuthenticationPrincipal UUID userId, @RequestBody SubscribeRq subscribeRq) {
         subscriptionService.subscribe(userId, subscribeRq.eventId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/unsubscribe")
+    public ResponseEntity<Void> unsubscribe(@AuthenticationPrincipal UUID userId, @RequestBody UnsubscribeRq subscribeRq) {
+        subscriptionService.unsubscribe(userId, subscribeRq.eventId());
 
         return ResponseEntity.ok().build();
     }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
+import ru.newrecon.subscription_service.entity.enums.Status;
 import ru.newrecon.subscription_service.exception.NoMorePlacesException;
 import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 
@@ -33,6 +34,7 @@ public class SubscriptionService {
         subscription.setEventId(createEvent.eventId());
         subscription.setCreateAt(LocalDateTime.now());
         subscription.setParticipantRole(ParticipantRole.OWNER);
+        subscription.setStatus(Status.ACTIVE);
 
         subscriptionRepository.save(subscription);
 
@@ -62,5 +64,18 @@ public class SubscriptionService {
         subscription.setParticipantRole(ParticipantRole.MEMBER);
 
         subscriptionRepository.save(subscription);
+    }
+
+    @Transactional
+    public void unsubscribe(UUID userId, UUID eventId) {
+
+        Subscription currentSubscription = subscriptionRepository.findByEventId(eventId).orElseThrow(
+            () -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId)
+        );
+
+        currentSubscription.setStatus(Status.DELETED);
+        subscriptionRepository.save(currentSubscription);
+
+        counterService.increment(eventId.toString());
     }
 }
