@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.entity.Event;
+import ru.newrecon.event_service.entity.enums.Status;
 import ru.newrecon.event_service.repository.EventRepository;
 
 @Service
@@ -24,7 +25,9 @@ public class EventService {
 
     @Transactional
     public Event create(Event event) {
+        event.setStatus(Status.ACTIVE);
         Event currentEvent = eventRepository.save(event);
+
         eventSendService.sendCreate(currentEvent);
         
         return currentEvent;
@@ -36,5 +39,15 @@ public class EventService {
 
     public void deleteById(UUID id) {
         eventRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        Event currentEvent = getById(id);
+
+        currentEvent.setStatus(Status.DELETED);
+        eventRepository.save(currentEvent);
+
+        eventSendService.sendDelete(currentEvent);
     }
 }

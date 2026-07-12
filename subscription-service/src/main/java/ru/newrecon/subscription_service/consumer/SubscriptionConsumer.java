@@ -29,5 +29,6 @@ public class SubscriptionConsumer {
     public void listenDeleteEvents(String message) {
         System.out.println("Recieve message from delete-event-events : " + message);
         DeleteEventDto deleteEventDto = kafkObjectMapper.readValue(message, DeleteEventDto.class);
+        subscriptionService.deleteByEventId(deleteEventDto.eventId());
     }
 }

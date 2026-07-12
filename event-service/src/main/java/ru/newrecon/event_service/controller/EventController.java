@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.dto.CreateEventRq;
 import ru.newrecon.event_service.dto.CreateEventRs;
+import ru.newrecon.event_service.dto.DeleteEventRq;
 import ru.newrecon.event_service.dto.GetEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
@@ -56,10 +57,16 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletById(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         eventService.deleteById(id);
         
         return ResponseEntity.ok().build();
     }
     
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestBody DeleteEventRq request) {
+        eventService.delete(request.eventId());
+        
+        return ResponseEntity.ok().build();
+    }
 }

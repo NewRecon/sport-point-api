@@ -5,11 +5,14 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import ru.newrecon.event_service.entity.enums.Status;
 
 @Getter
 @Setter
@@ -25,4 +28,6 @@ public class Event {
     private LocalTime duration;
     private UUID ownerId;
     private int totalParticipants;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

@@ -257,8 +257,6 @@ sequenceDiagram
     ES-->>GW: 200 OK
     GW-->>C: 200 OK
     K-)SS: Consume Event
-    SS->>DB2: Soft delete subscriptions
-    loop Для каждого активного билета
-        SS->>R: INCR event:{eventId}:subs
-    end
+    SS->>DB2: Soft delete ALL subscriptions
+    SS->>R: DELETE event:{eventId}:subs
 ```

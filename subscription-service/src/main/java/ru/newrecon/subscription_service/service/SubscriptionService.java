@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
@@ -15,6 +16,7 @@ import ru.newrecon.subscription_service.entity.enums.Status;
 import ru.newrecon.subscription_service.exception.NoMorePlacesException;
 import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
@@ -68,14 +70,20 @@ public class SubscriptionService {
 
     @Transactional
     public void unsubscribe(UUID userId, UUID eventId) {
-
-        Subscription currentSubscription = subscriptionRepository.findByEventId(eventId).orElseThrow(
-            () -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId)
-        );
+       Subscription currentSubscription = subscriptionRepository.findByEventIdAndUserId(eventId, userId)
+            .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId));
 
         currentSubscription.setStatus(Status.DELETED);
         subscriptionRepository.save(currentSubscription);
 
         counterService.increment(eventId.toString());
+    }
+
+    @Transactional
+    public void deleteByEventId(UUID eventId) {
+        int deleteByEventId = subscriptionRepository.deleteByEventId(eventId);
+        log.info("При удалении ивента с id : " + eventId + "было удалено подписок : " + deleteByEventId);
+
+        counterService.deleteCounter(eventId.toString());
     }
 }
