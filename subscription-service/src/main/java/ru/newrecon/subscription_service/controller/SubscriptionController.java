@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import ru.newrecon.subscription_service.dto.CreateSubscriptionRq;
 import ru.newrecon.subscription_service.dto.CreateSubscriptionRs;
 import ru.newrecon.subscription_service.dto.GetSubscriptionRs;
+import ru.newrecon.subscription_service.dto.SubscribeRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRs;
 import ru.newrecon.subscription_service.mapper.SubscriptionMapper;
@@ -38,19 +39,21 @@ public class SubscriptionController {
     }
     
     @PostMapping
-    public CreateSubscriptionRs create(@RequestBody CreateSubscriptionRq request) {
+    public CreateSubscriptionRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateSubscriptionRq request) {
         return subscriptionMapper.mapToCreateSubscriptionRs(
             subscriptionService.save(
-                subscriptionMapper.map(request)
+                subscriptionMapper.map(userId, request)
             )
         );
     }
 
     @PutMapping("/{id}")
-    public UpdateSubscriptionRs updateById(@PathVariable UUID id, @RequestBody UpdateSubscriptionRq request) {
+    public UpdateSubscriptionRs updateById(
+        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateSubscriptionRq request
+    ) {
         return subscriptionMapper.mapToUpdateSubscriptionRs(
             subscriptionService.save(
-                subscriptionMapper.map(id, request)
+                subscriptionMapper.map(userId, id, request)
             )
         );
     }
@@ -62,10 +65,10 @@ public class SubscriptionController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
-    public GetSubscriptionRs get(@AuthenticationPrincipal UUID id) {
-        return subscriptionMapper.mapToGetSubscriptionRs(
-            subscriptionService.getById(id)
-        );
+    @PostMapping("/subscribe")
+    public ResponseEntity<Void> subscribe(@AuthenticationPrincipal UUID userId, @RequestBody SubscribeRq subscribeRq) {
+        subscriptionService.subscribe(userId, subscribeRq.eventId());
+
+        return ResponseEntity.ok().build();
     }
 }

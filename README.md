@@ -87,13 +87,12 @@ graph TB
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
 | **`profiles`** | `id` (PK), `user_id` (FK), `bio`, `avatar_url`, `location`, `status` | Публичные профили с информацией о себе |
-| **`subscriptions_history`** | `id` (PK), `user_id`, `event_id`, `subscribed_at`, `participant_role` | История активности пользователя (для отображения в профиле) |
 
 ### `events_db` (Event Service + Subscription Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
 | **`events`** | `id` (PK), `title`, `description`, `date`, `location_lat`, `location_lng`, `organizer_id`, `total_participants`, `status` | Метаданные ивентов с координатами для карты |
-| **`subscriptions`** | `id` (PK), `user_id`, `event_id`, `subscribed_at` | Факты подписок на ивенты |
+| **`subscriptions`** | `id` (PK), `user_id`, `event_id`, `participant_role`, `subscribed_at` | Факты подписок на ивенты |
 
 ### Redis (только Subscription Service)
 | Ключ | Тип | Описание |
@@ -135,22 +134,15 @@ graph TD
     Sub --> Redis
     
     %% Асинхронный путь (через Kafka-шину)
-    subgraph KafkaBus["Apache Kafka — асинхронная шина событий"]
+    subgraph KafkaBus["Kafka"]
         direction LR
         T1[event-events]
-        T2[sub-events]
-        T3[profile-events]
     end
     
     %% Публикации в шину
     Event -. "publish" .-> T1
-    Sub -. "publish" .-> T2
-    Profile -. "publish" .-> T3
     
     %% Подписки потребителей
-    T2 -. "consume" .-> Profile
-    T3 -. "consume" .-> Sub
-    T1 -. "consume" .-> Profile
     T1 -. "consume" .-> Sub
     
     %% Стили
@@ -176,17 +168,17 @@ graph TD
 ### Бизнес-сценарии
 
 #### Сценарий 1: Создание ивента на карте
-REST-запрос обрабатывается синхронно. Счётчик мест в Redis инициализируется через Subscription Service. В профиле создателя отображается новая подпистка с ролью "OWNER".
+Пользователь создаёт ивент → через Kafka Subscription Service создаёт подписку с ролью "OWNER", Счётчик мест в Redis инициализируется
 
 ```mermaid
 sequenceDiagram
     participant C as Frontend
     participant GW as API Gateway
     participant ES as Event Service
-    participant DB as PostgreSQL (events_db)
+    participant DB as events_db
     participant K as Kafka
-    participant PS as Profile Service
     participant SS as Subscription Service
+    participant DB2 as subscription_db
     participant R as Redis
 
     C->>GW: POST /events (JWT)
@@ -195,13 +187,13 @@ sequenceDiagram
     ES-)K: Publish: EventCreatedEvent (async)
     ES-->>GW: 201 Created
     GW-->>C: 201 Created + event data
-    K-)PS: Consume Event
     K-)SS: Consume Event
+    SS->>DB2: INSERT INTO subscriptions
     SS->>R: INCR (создание счётчика мест)
 ```
 
 #### Сценарий 2: Подписка пользователя на ивент
-Ключевой сценарий — именно здесь Redis показывает всю свою мощь. Атомарный DECR защищает от овербукинга даже при тысячах одновременных запросов.
+Пользователь создаёт подписку, Redis проверяет наличие мест DECR
 
 ```mermaid
 sequenceDiagram
@@ -209,9 +201,7 @@ sequenceDiagram
     participant GW as API Gateway
     participant SS as Subscription Service
     participant R as Redis
-    participant DB as PostgreSQL (events_db)
-    participant K as Kafka
-    participant PS as Profile Service
+    participant DB as subscription_db
 
     C->>GW: POST /subscribe (JWT)
     GW->>SS: Forward Request
@@ -221,44 +211,34 @@ sequenceDiagram
         SS-->>GW: 400 Bad Request
         GW-->>C: 400 "No subs available"
     else Место есть
-        SS->>DB: INSERT INTO subs (CONFIRMED)
-        SS-)K: Publish: UserSubscribedEvent {userId, eventId}
+        SS->>DB: INSERT INTO event
         SS-->>GW: 200 OK
         GW-->>C: 200 OK
-        K-)PS: Consume Event
     end
 ```
 
-#### Сценарий 3: Удаление пользователя (каскадная очистка)
-Пользователь удаляет аккаунт → Profile Service чистит свои таблицы → через Kafka Event Service возвращает места в продажу.
+#### Сценарий 3: Удаление подписки
+Пользователь отменяет подписку → Redis INCR
 
 ```mermaid
 sequenceDiagram
     participant C as Frontend
     participant GW as API Gateway
-    participant PS as Profile Service
-    participant DB1 as profile_db
-    participant K as Kafka
     participant SS as Subscription Service
+    participant DB as subscription_db
     participant R as Redis
-    participant DB2 as events_db
 
-    C->>GW: DELETE /profiles/{id} (JWT)
-    GW->>PS: Forward Request
-    PS->>DB1: Soft delete user + history
-    PS-)K: Publish: UserDeletedEvent {userId}
-    PS-->>GW: 200 OK
+    C->>GW: DELETE /events/{id} (JWT)
+    GW->>SS: Forward Request
+    SS->>DB: Soft delete subscriptions
+    SS->>R: INCR event:{eventId}:subs
+    SS-->>GW: 200 OK
     GW-->>C: 200 OK
-    K-)SS: Consume Event
-    SS->>DB2: SELECT subs WHERE user_id = ?
-    loop Для каждого активного билета
-        SS->>R: INCR event:{eventId}:subs
-        SS->>DB2: UPDATE sub SET status = CANCELLED
-    end
 ```
 
 #### Сценарий 4: Удаление ивента
-Организатор отменяет мероприятие → Event Service чистит свои данные → Profile Service асинхронно удаляет подписки из профилей пользователей.
+Пользователь удаляет ивент → через Kafka Subscription Service отменяет подписки
+
 ```mermaid
 sequenceDiagram
     participant C as Frontend
@@ -267,19 +247,18 @@ sequenceDiagram
     participant DB1 as events_db
     participant K as Kafka
     participant SS as Subscription Service
+    participant DB2 as subscription_db
     participant R as Redis
-    participant PS as Profile Service
-    participant DB2 as profile_db
 
-    C->>GW: DELETE /events/{id} (JWT)
+    C->>GW: DELETE /profiles/{id} (JWT)
     GW->>ES: Forward Request
     ES->>DB1: Soft delete events
-    ES->>DB1: Soft delete sub
-    ES-)K: Publish: EventDeletedEvent {eventId}
+    ES-)K: Publish: EventDeletedEvent
     ES-->>GW: 200 OK
     GW-->>C: 200 OK
     K-)SS: Consume Event
-    SS->>R: delete event cache
-    K-)PS: Consume Event
-    PS->>DB2: Soft delete subscriptions_history
+    SS->>DB2: Soft delete subscriptions
+    loop Для каждого активного билета
+        SS->>R: INCR event:{eventId}:subs
+    end
 ```

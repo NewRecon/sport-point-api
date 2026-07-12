@@ -38,19 +38,21 @@ public class ProfileController {
     }
     
     @PostMapping
-    public CreateProfileRs create(@RequestBody CreateProfileRq request) {
+    public CreateProfileRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateProfileRq request) {
         return profileMapper.mapToCreateProfileRs(
             profileService.save(
-                profileMapper.map(request)
+                profileMapper.map(userId, request)
             )
         );
     }
 
     @PutMapping("/{id}")
-    public UpdateProfileRs updateById(@PathVariable UUID id, @RequestBody UpdateProfileRq request) {
+    public UpdateProfileRs updateById(
+        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateProfileRq request
+    ) {
         return profileMapper.mapToUpdateProfileRs(
             profileService.save(
-                profileMapper.map(id, request)
+                profileMapper.map(userId, id, request)
             )
         );
     }

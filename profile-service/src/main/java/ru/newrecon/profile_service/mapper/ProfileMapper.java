@@ -17,9 +17,9 @@ import ru.newrecon.profile_service.entity.Profile;
 public interface ProfileMapper {
 
     @Mapping(target = "id", ignore = true)
-    Profile map(CreateProfileRq source);
+    Profile map(UUID userId, CreateProfileRq source);
 
-    Profile map(UUID id, UpdateProfileRq source);
+    Profile map(UUID userId, UUID id, UpdateProfileRq source);
 
     CreateProfileRs mapToCreateProfileRs(Profile source);
 

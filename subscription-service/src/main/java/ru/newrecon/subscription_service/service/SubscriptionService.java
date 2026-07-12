@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
+import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
+import ru.newrecon.subscription_service.exception.NoMorePlacesException;
 import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 
 @Service
@@ -30,6 +32,7 @@ public class SubscriptionService {
         subscription.setUserId(createEvent.userId());
         subscription.setEventId(createEvent.eventId());
         subscription.setCreateAt(LocalDateTime.now());
+        subscription.setParticipantRole(ParticipantRole.OWNER);
 
         subscriptionRepository.save(subscription);
 
@@ -42,5 +45,22 @@ public class SubscriptionService {
 
     public void delete(UUID id) {
         subscriptionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void subscribe(UUID userId, UUID eventId) {
+        long subsCount = counterService.decrement(eventId.toString());
+
+        if (subsCount < 0) {
+            throw new NoMorePlacesException("Мест на ивент больше нет");
+        }
+
+        Subscription subscription = new Subscription();
+        subscription.setUserId(userId);
+        subscription.setEventId(eventId);
+        subscription.setCreateAt(LocalDateTime.now());
+        subscription.setParticipantRole(ParticipantRole.MEMBER);
+
+        subscriptionRepository.save(subscription);
     }
 }

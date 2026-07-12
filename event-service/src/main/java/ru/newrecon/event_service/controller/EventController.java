@@ -3,6 +3,7 @@ package ru.newrecon.event_service.controller;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,16 +40,18 @@ public class EventController {
     }
     
     @PostMapping
-    public CreateEventRs create(@RequestBody CreateEventRq request) {
+    public CreateEventRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(
-           eventService.create(eventMapper.map(request))
+           eventService.create(eventMapper.map(userId, request))
         );
     }
 
     @PutMapping("/{id}")
-    public UpdateEventRs updateById(@PathVariable UUID id, @RequestBody UpdateEventRq request) {
+    public UpdateEventRs updateById(
+        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateEventRq request
+    ) {
         return eventMapper.mapToUpdateEventRs(
-            eventService.save(eventMapper.map(id, request))
+            eventService.save(eventMapper.map(userId, id, request))
         );
     }
 

@@ -17,9 +17,9 @@ import ru.newrecon.event_service.entity.Event;
 public interface EventMapper {
 
     @Mapping(target = "id", ignore = true)
-    Event map(CreateEventRq source);
+    Event map(UUID ownerId, CreateEventRq source);
 
-    Event map(UUID id, UpdateEventRq source);
+    Event map(UUID ownerId, UUID id, UpdateEventRq source);
 
     CreateEventRs mapToCreateEventRs(Event source);
 
