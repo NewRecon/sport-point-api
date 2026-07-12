@@ -81,18 +81,18 @@ graph TB
 ### `auth_db` (Auth Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
-| **`users`** | `id` (PK), `username`, `password_hash`, `role`, `created_at`, `status` | Учётные записи пользователей |
+| **`users`** | `id` (PK), `username`, `password`, `role`, `created_at` | Учётные записи пользователей |
 
 ###  `profile_db` (Profile Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
-| **`profiles`** | `id` (PK), `user_id` (FK), `bio`, `avatar_url`, `location`, `status` | Публичные профили с информацией о себе |
+| **`profiles`** | `id` (PK), `user_id`, `bio` | Публичные профили с информацией о себе |
 
 ### `events_db` (Event Service + Subscription Service)
 | Таблица | Поля | Описание |
 | :--- | :--- | :--- |
 | **`events`** | `id` (PK), `title`, `description`, `date`, `location_lat`, `location_lng`, `organizer_id`, `total_participants`, `status` | Метаданные ивентов с координатами для карты |
-| **`subscriptions`** | `id` (PK), `user_id`, `event_id`, `participant_role`, `subscribed_at` | Факты подписок на ивенты |
+| **`subscriptions`** | `id` (PK), `user_id`, `event_id`, `participant_role`, `subscribed_at`, `status` | Факты подписок на ивенты |
 
 ### Redis (только Subscription Service)
 | Ключ | Тип | Описание |

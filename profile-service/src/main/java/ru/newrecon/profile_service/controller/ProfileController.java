@@ -3,6 +3,7 @@ package ru.newrecon.profile_service.controller;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,13 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final ProfileMapper profileMapper;
+
+    @GetMapping
+    public GetProfileRs get(@AuthenticationPrincipal UUID id) {
+        return profileMapper.mapToGetProfileRs(
+            profileService.getById(id)
+        );
+    }
     
     @GetMapping("/{id}")
     public GetProfileRs getById(@PathVariable UUID id) {
@@ -57,18 +65,12 @@ public class ProfileController {
         );
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         profileService.delete(id);
 
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping
-    public GetProfileRs get(@AuthenticationPrincipal UUID id) {
-        return profileMapper.mapToGetProfileRs(
-            profileService.getById(id)
-        );
     }
     
 }

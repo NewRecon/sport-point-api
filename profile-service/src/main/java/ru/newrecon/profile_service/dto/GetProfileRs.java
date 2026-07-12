@@ -5,5 +5,6 @@ import java.util.UUID;
 public record GetProfileRs(
     UUID id,
     String name,
-    UUID userId
+    UUID userId,
+    String bio
 ) {}

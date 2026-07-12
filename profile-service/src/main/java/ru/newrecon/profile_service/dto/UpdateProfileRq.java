@@ -1,5 +1,6 @@
 package ru.newrecon.profile_service.dto;
 
 public record UpdateProfileRq(
-    String name
+    String name,
+    String bio
 ) {}

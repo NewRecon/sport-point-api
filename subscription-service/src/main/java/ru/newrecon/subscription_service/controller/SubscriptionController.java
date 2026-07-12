@@ -3,6 +3,7 @@ package ru.newrecon.subscription_service.controller;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,7 @@ public class SubscriptionController {
         );
     }
     
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public CreateSubscriptionRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateSubscriptionRq request) {
         return subscriptionMapper.mapToCreateSubscriptionRs(
@@ -46,24 +48,6 @@ public class SubscriptionController {
                 subscriptionMapper.map(userId, request)
             )
         );
-    }
-
-    @PutMapping("/{id}")
-    public UpdateSubscriptionRs updateById(
-        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateSubscriptionRq request
-    ) {
-        return subscriptionMapper.mapToUpdateSubscriptionRs(
-            subscriptionService.save(
-                subscriptionMapper.map(userId, id, request)
-            )
-        );
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        subscriptionService.delete(id);
-
-        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/subscribe")
@@ -79,4 +63,25 @@ public class SubscriptionController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @PutMapping("/{id}")
+    public UpdateSubscriptionRs updateById(
+        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateSubscriptionRq request
+    ) {
+        return subscriptionMapper.mapToUpdateSubscriptionRs(
+            subscriptionService.save(
+                subscriptionMapper.map(userId, id, request)
+            )
+        );
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
+        subscriptionService.delete(id);
+
+        return ResponseEntity.ok().build();
+    }
+
 }
