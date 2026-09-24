@@ -15,11 +15,6 @@ spring:
         show-sql: true
     kafka:
         bootstrap-servers: kafka:9092
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.apache.kafka.common.serialization.StringSerializer
-            security:
-                protocol: PLAINTEXT
         consumer:
             group-id: profile-service-group
             auto-offset-reset: earliest

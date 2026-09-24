@@ -34,7 +34,7 @@ public class ProfileController {
     @GetMapping
     public GetProfileRs get(@AuthenticationPrincipal UUID id) {
         return profileMapper.mapToGetProfileRs(
-            profileService.getById(id)
+            profileService.getByUserId(id)
         );
     }
     

@@ -10,7 +10,6 @@
 - **Создание ивентов** — любой пользователь может организовать своё событие (пробежка, турнир, тренировка и т.д.)
 - **Подписка и участие** — можно записаться на интересующее ивент и увидеть список других участников
 - **Профиль пользователя** — каждый может рассказать о себе, своих интересах и спортивной активности
-- **История активности** — в профиле отображаются все ивенты, в которых пользователь участвовал
 ---
 
 ## Стек технологий
@@ -70,7 +69,7 @@ graph TB
 | :--- | :--- | :--- | :--- |
 | **Gateway** | Маршрутизация, балансировка, JWT-валидация, обогащение заголовков | — | Проксирует все запросы |
 | **Auth Service** | Регистрация, аутентификация, выпуск JWT, CRUD пользователей | `auth_db` (PostgreSQL) | `/register`, `/login`, `/users/**` |
-| **Profile Service** | Публичные профили, история активности, подписки пользователя | `profile_db` (PostgreSQL) | `/profiles/**` |
+| **Profile Service** | Публичные профили пользователей | `profile_db` (PostgreSQL) | `/profiles/**` |
 | **Event Service** | Создание и управление ивентами, метаданные мероприятий | `events_db` (PostgreSQL) | `/events/**` |
 | **Subscription Service** | Подписки на ивенты, владение "местами", билетами | `events_db` (PostgreSQL) + **Redis** | `/subscriptions/**` |
 
@@ -102,7 +101,7 @@ graph TB
 
 ## Общая схема взаимодействия
 ```mermaid
-graph TD
+graph TB
     %% Синхронный путь (сверху вниз)
     Client[Frontend / Mobile App] --> GW[API Gateway<br/>WebFlux + JWT]
     
@@ -120,13 +119,13 @@ graph TD
         Redis[(Redis<br/>Счётчики мест)]
     end
     
-    %% Синхронные связи: Gateway → Services
+    %% Синхронные связи: Gateway ->Services
     GW --> Auth
     GW --> Profile
     GW --> Event
     GW --> Sub
     
-    %% Синхронные связи: Services → Data
+    %% Синхронные связи: Services ->Data
     Auth --> DB1
     Profile --> DB2
     Event --> DB3
@@ -135,8 +134,10 @@ graph TD
     
     %% Асинхронный путь (через Kafka-шину)
     subgraph KafkaBus["Kafka"]
-        direction LR
         T1[event-events]
+        T2[user-events]
+        direction TB
+        T1 ~~~ T2
     end
     
     %% Публикации в шину
@@ -144,6 +145,12 @@ graph TD
     
     %% Подписки потребителей
     T1 -. "consume" .-> Sub
+
+    %% Публикации в шину
+    Auth -. "publish" .-> T2
+    
+    %% Подписки потребителей
+    T2 -. "consume" .-> Profile
     
     %% Стили
     classDef sync fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#0d47a1
@@ -167,8 +174,31 @@ graph TD
 
 ### Бизнес-сценарии
 
-#### Сценарий 1: Создание ивента на карте
-Пользователь создаёт ивент → через Kafka Subscription Service создаёт подписку с ролью "OWNER", Счётчик мест в Redis инициализируется
+#### Сценарий 1: Регистарция пользователя и создание профиля
+Пользователь регистрируется -> через Kafka User Service создаёт ивент -> ивент попадает в Profile Service и создается профиль пользователя
+
+```mermaid
+sequenceDiagram
+    participant C as Frontend
+    participant GW as API Gateway
+    participant AS as Auth Service
+    participant DB as user_db
+    participant K as Kafka
+    participant PS as Profile Service
+    participant DB2 as profile_db
+
+    C->>GW: POST /register
+    GW->>AS: Forward Request
+    AS->>DB: INSERT INTO user
+    AS-)K: Publish: UserEvent (async)
+    AS-->>GW: 200 Created
+    GW-->>C: 200 Created + JWT
+    K-)PS: Consume Event
+    PS->>DB2: INSERT INTO profile
+```
+
+#### Сценарий 2: Создание ивента на карте
+Пользователь создаёт ивент ->через Kafka Subscription Service создаёт ивент ->
 
 ```mermaid
 sequenceDiagram
@@ -192,7 +222,7 @@ sequenceDiagram
     SS->>R: INCR (создание счётчика мест)
 ```
 
-#### Сценарий 2: Подписка пользователя на ивент
+#### Сценарий 3: Подписка пользователя на ивент
 Пользователь создаёт подписку, Redis проверяет наличие мест DECR
 
 ```mermaid
@@ -217,8 +247,8 @@ sequenceDiagram
     end
 ```
 
-#### Сценарий 3: Удаление подписки
-Пользователь отменяет подписку → Redis INCR
+#### Сценарий 4: Удаление подписки
+Пользователь отменяет подписку ->Redis INCR
 
 ```mermaid
 sequenceDiagram
@@ -236,8 +266,8 @@ sequenceDiagram
     GW-->>C: 200 OK
 ```
 
-#### Сценарий 4: Удаление ивента
-Пользователь удаляет ивент → через Kafka Subscription Service отменяет подписки
+#### Сценарий 5: Удаление ивента
+Пользователь удаляет ивент ->через Kafka Subscription Service отменяет подписки
 
 ```mermaid
 sequenceDiagram

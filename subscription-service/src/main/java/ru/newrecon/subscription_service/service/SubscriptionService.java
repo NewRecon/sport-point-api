@@ -30,17 +30,17 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void create(CreateEventDto createEvent) {
+    public void create(CreateEventDto createEventDto) {
         Subscription subscription = new Subscription();
-        subscription.setUserId(createEvent.userId());
-        subscription.setEventId(createEvent.eventId());
+        subscription.setUserId(createEventDto.userId());
+        subscription.setEventId(createEventDto.eventId());
         subscription.setCreateAt(LocalDateTime.now());
         subscription.setParticipantRole(ParticipantRole.OWNER);
         subscription.setStatus(Status.ACTIVE);
 
         subscriptionRepository.save(subscription);
 
-        counterService.setCounterValue(createEvent.eventId().toString(), createEvent.totalParticipants());
+        counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants());
     }
 
     public Subscription save(Subscription Subscription) {

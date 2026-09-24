@@ -18,6 +18,7 @@ import ru.newrecon.auth_service.repository.UserRepository;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserSendService userSendService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -31,6 +32,13 @@ public class UserService implements UserDetailsService {
 
     public UserDetails save(User user) {
         return userRepository.save(user);
+    }
+
+    public UserDetails create(User user) {
+        UserDetails userdetails = save(user);
+        userSendService.sendCreate(user);
+
+        return userdetails;
     }
 
     public void assignRole(UUID userId, Role role) {

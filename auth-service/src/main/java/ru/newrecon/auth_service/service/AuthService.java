@@ -50,7 +50,7 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(Set.of());
 
-        User user = (User) userService.save(newUser);
+        User user = (User) userService.create(newUser);
 
         return jwtProvider.generateToken(user); 
     }
