@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,10 @@ public class EventService {
     public Event getById(UUID id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Не найден ивент с id : " + id));
+    }
+
+    public List<Event> findAll() {
+        return eventRepository.findAll();
     }
 
     @Transactional

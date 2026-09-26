@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,13 @@ public class EventController {
     public GetEventRs getById(@PathVariable UUID id) {
         return eventMapper.mapToGetEventRs(
             eventService.getById(id)
+        );
+    }
+
+    @GetMapping
+    public List<GetEventRs> findAll() {
+        return eventMapper.mapToGetEventRs(
+            eventService.findAll()
         );
     }
     

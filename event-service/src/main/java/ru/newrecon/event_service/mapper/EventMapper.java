@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.mapper;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.mapstruct.Mapper;
@@ -26,4 +27,6 @@ public interface EventMapper {
     UpdateEventRs mapToUpdateEventRs(Event source);
 
     GetEventRs mapToGetEventRs(Event source);
+    
+    List<GetEventRs> mapToGetEventRs(List<Event> source);
 }
