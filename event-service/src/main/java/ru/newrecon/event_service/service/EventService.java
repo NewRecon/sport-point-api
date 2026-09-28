@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +25,8 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найден ивент с id : " + id));
     }
 
-    public List<Event> findAll() {
-        return eventRepository.findAll();
+    public List<Event> findAllActive() {
+        return eventRepository.findAllByStatus(Status.ACTIVE);
     }
 
     @Transactional
@@ -54,5 +55,14 @@ public class EventService {
         eventRepository.save(currentEvent);
 
         eventSendService.sendDelete(currentEvent);
+    }
+
+    public int deleteExpired() {
+        List<Event> expiredEvents = eventRepository.findAllExpired(LocalDateTime.now());
+
+        expiredEvents.stream()
+            .forEach(event -> event.setStatus(Status.DELETED));
+
+        return eventRepository.saveAll(expiredEvents).size();
     }
 }

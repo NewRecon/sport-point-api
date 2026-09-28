@@ -9,6 +9,8 @@ spring:
         username: postgres
         password: postgres
         driver-class-name: org.postgresql.Driver
+    jackson:
+        time-zone: "Europe/Moscow"
     jpa:
         hibernate:
             ddl-auto: create-drop
@@ -20,4 +22,8 @@ spring:
             value-serializer: org.apache.kafka.common.serialization.StringSerializer
             security:
                 protocol: PLAINTEXT
+
+scheduler:
+    delete-event:
+        crone: "0 */1 * * * *"
                 

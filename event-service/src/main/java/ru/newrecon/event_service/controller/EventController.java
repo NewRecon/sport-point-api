@@ -43,9 +43,9 @@ public class EventController {
     }
 
     @GetMapping
-    public List<GetEventRs> findAll() {
+    public List<GetEventRs> findAllActive() {
         return eventMapper.mapToGetEventRs(
-            eventService.findAll()
+            eventService.findAllActive()
         );
     }
     

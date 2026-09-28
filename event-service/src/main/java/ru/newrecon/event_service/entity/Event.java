@@ -21,11 +21,12 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String title;
+    private String locationName;
     private double latitude;
     private double longitude;
     private String description;
-    private LocalDateTime startAt;
-    private LocalTime duration;
+    private LocalDateTime date;
     private UUID ownerId;
     private int totalParticipants;
     @Enumerated(EnumType.STRING)

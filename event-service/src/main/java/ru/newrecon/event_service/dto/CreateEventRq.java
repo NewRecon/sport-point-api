@@ -4,10 +4,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public record CreateEventRq(
+    String title,
+    String locationName,
     double latitude,
     double longitude,
     String description,
-    LocalDateTime startAt,
+    LocalDateTime date,
     LocalTime duration,
     int totalParticipants
 ) {}

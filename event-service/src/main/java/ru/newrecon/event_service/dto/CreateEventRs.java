@@ -6,10 +6,12 @@ import java.util.UUID;
 
 public record CreateEventRs(
     UUID id,
+    String title,
+    String locationName,
     double latitude,
     double longitude,
     String description,
-    LocalDateTime startAt,
+    LocalDateTime date,
     LocalTime duration,
     UUID ownerId,
     int totalParticipants
