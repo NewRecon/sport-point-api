@@ -1,5 +1,6 @@
 package ru.newrecon.subscription_service.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,11 @@ public class SubscriptionController {
         return subscriptionMapper.mapToGetSubscriptionRs(
             subscriptionService.getById(id)
         );
+    }
+
+    @GetMapping("/event/{eventId}/user-ids")
+    public List<UUID> findUserIdsByEventId(@PathVariable UUID eventId) {
+        return subscriptionService.findUserIdsByEventId(eventId);
     }
     
     @PreAuthorize("hasRole('MANAGER')")

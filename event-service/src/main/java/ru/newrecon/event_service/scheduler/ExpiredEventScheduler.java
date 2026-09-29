@@ -17,6 +17,6 @@ public class ExpiredEventScheduler {
     @Scheduled(cron = "${scheduler.delete-event.crone}")
     void deleteExpiredEventScheduler() {
         int count = eventService.deleteExpired();
-        log.info(count + " expired events was deleted by scheduler");
+        log.info(count + " просроченных ивентов было удалено");
     }
 }

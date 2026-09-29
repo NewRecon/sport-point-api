@@ -19,7 +19,7 @@ public class ProfileConsumer {
 
     @KafkaListener(topics = "create-user-events")
     public void listenCreateUser(String message) {
-        log.info("Recieve message from create-user-events : " + message);
+        log.info("Получено сообщение из create-user-events : " + message);
         CreateUserDto createUserDto = kafkObjectMapper.readValue(message, CreateUserDto.class);
         profileService.create(createUserDto);
     }

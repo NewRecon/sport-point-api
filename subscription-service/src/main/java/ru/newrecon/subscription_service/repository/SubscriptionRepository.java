@@ -1,5 +1,6 @@
 package ru.newrecon.subscription_service.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, UUID
     int deleteByEventId(UUID eventId);
 
     Optional<Subscription> findByEventIdAndUserId(UUID eventId, UUID userId);
+
+    List<Subscription> findByEventId(UUID eventId);
 }

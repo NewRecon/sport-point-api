@@ -20,14 +20,14 @@ public class SubscriptionConsumer {
 
     @KafkaListener(topics = "create-event-events")
     public void listenCreateEvents(String message) {
-        log.info("Recieve message from create-event-events : " + message);
+        log.info("Получено сообщение из create-event-events : " + message);
         CreateEventDto createEventDto = kafkObjectMapper.readValue(message, CreateEventDto.class);
         subscriptionService.create(createEventDto);
     }
 
     @KafkaListener(topics = "delete-event-events")
     public void listenDeleteEvents(String message) {
-        System.out.println("Recieve message from delete-event-events : " + message);
+        System.out.println("Получено сообщение из delete-event-events : " + message);
         DeleteEventDto deleteEventDto = kafkObjectMapper.readValue(message, DeleteEventDto.class);
         subscriptionService.deleteByEventId(deleteEventDto.eventId());
     }

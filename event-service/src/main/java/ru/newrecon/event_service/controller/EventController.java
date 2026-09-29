@@ -20,6 +20,7 @@ import ru.newrecon.event_service.dto.GetEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
 import ru.newrecon.event_service.mapper.EventMapper;
+import ru.newrecon.event_service.service.EventAggregatorService;
 import ru.newrecon.event_service.service.EventService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,12 +35,11 @@ public class EventController {
 
     private final EventService eventService;
     private final EventMapper eventMapper;
+    private final EventAggregatorService eventAggregatorService;
 
     @GetMapping("/{id}")
     public GetEventRs getById(@PathVariable UUID id) {
-        return eventMapper.mapToGetEventRs(
-            eventService.getById(id)
-        );
+        return eventAggregatorService.getEventPageData(id);
     }
 
     @GetMapping

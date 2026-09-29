@@ -1,5 +1,6 @@
 package ru.newrecon.subscription_service.mapper;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.mapstruct.Mapper;
@@ -28,4 +29,6 @@ public interface SubscriptionMapper {
     UpdateSubscriptionRs mapToUpdateSubscriptionRs(Subscription source);
 
     GetSubscriptionRs mapToGetSubscriptionRs(Subscription source);
+
+    List<GetSubscriptionRs> mapToGetSubscriptionRs(List<Subscription> source);
 }

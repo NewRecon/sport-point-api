@@ -1,6 +1,7 @@
 package ru.newrecon.subscription_service.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -29,6 +30,13 @@ public class SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с id : " + id));
     }
 
+    public List<UUID> findUserIdsByEventId(UUID eventId) {
+        return subscriptionRepository.findByEventId(eventId)
+        .stream()
+        .map(sub -> sub.getUserId())
+        .toList();
+    }
+
     @Transactional
     public void create(CreateEventDto createEventDto) {
         Subscription subscription = new Subscription();
@@ -38,9 +46,9 @@ public class SubscriptionService {
         subscription.setParticipantRole(ParticipantRole.OWNER);
         subscription.setStatus(Status.ACTIVE);
 
-        subscriptionRepository.save(subscription);
-
         counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants());
+
+        subscriptionRepository.save(subscription);
     }
 
     public Subscription save(Subscription Subscription) {

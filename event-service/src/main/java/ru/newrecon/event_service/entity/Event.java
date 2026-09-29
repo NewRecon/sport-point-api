@@ -1,7 +1,6 @@
 package ru.newrecon.event_service.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
