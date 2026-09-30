@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.entity.Event;
-import ru.newrecon.event_service.entity.enums.Status;
+import ru.newrecon.event_service.entity.enums.EventStatus;
 import ru.newrecon.event_service.repository.EventRepository;
 
 @Service
@@ -26,12 +26,12 @@ public class EventService {
     }
 
     public List<Event> findAllActive() {
-        return eventRepository.findAllByStatus(Status.ACTIVE);
+        return eventRepository.findAllByStatus(EventStatus.ACTIVE);
     }
 
     @Transactional
     public Event create(Event event) {
-        event.setStatus(Status.ACTIVE);
+        event.setStatus(EventStatus.ACTIVE);
         Event currentEvent = eventRepository.save(event);
 
         eventSendService.sendCreate(currentEvent);
@@ -51,7 +51,7 @@ public class EventService {
     public void delete(UUID id) {
         Event currentEvent = getById(id);
 
-        currentEvent.setStatus(Status.DELETED);
+        currentEvent.setStatus(EventStatus.DELETED);
         eventRepository.save(currentEvent);
 
         eventSendService.sendDelete(currentEvent);
@@ -61,7 +61,7 @@ public class EventService {
         List<Event> expiredEvents = eventRepository.findAllExpired(LocalDateTime.now());
 
         expiredEvents.stream()
-            .forEach(event -> event.setStatus(Status.DELETED));
+            .forEach(event -> event.setStatus(EventStatus.DELETED));
 
         return eventRepository.saveAll(expiredEvents).size();
     }

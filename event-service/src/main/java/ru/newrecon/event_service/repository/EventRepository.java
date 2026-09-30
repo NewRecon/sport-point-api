@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import ru.newrecon.event_service.entity.Event;
-import ru.newrecon.event_service.entity.enums.Status;
+import ru.newrecon.event_service.entity.enums.EventStatus;
 
 public interface EventRepository extends JpaRepository<Event, UUID> {
 
-    List<Event> findAllByStatus(Status status);
+    List<Event> findAllByStatus(EventStatus status);
 
     @Query (value = """
             select e

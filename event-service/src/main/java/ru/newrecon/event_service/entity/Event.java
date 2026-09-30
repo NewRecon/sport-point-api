@@ -11,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import ru.newrecon.event_service.entity.enums.Status;
+import ru.newrecon.event_service.entity.enums.EventStatus;
 
 @Getter
 @Setter
@@ -29,5 +29,5 @@ public class Event {
     private UUID ownerId;
     private int totalParticipants;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private EventStatus status;
 }

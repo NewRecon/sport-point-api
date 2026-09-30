@@ -40,11 +40,6 @@ public class SubscriptionController {
             subscriptionService.getById(id)
         );
     }
-
-    @GetMapping("/event/{eventId}/user-ids")
-    public List<UUID> findUserIdsByEventId(@PathVariable UUID eventId) {
-        return subscriptionService.findUserIdsByEventId(eventId);
-    }
     
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping

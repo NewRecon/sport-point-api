@@ -1,6 +1,6 @@
 package ru.newrecon.event_service.entity.enums;
 
-public enum Status {
+public enum SubscriptionStatus {
     ACTIVE,
     DELETED
 }

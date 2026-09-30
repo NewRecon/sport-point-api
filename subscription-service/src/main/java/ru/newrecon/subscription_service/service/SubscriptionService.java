@@ -13,8 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
-import ru.newrecon.subscription_service.entity.enums.Status;
+import ru.newrecon.subscription_service.entity.enums.SubscriptionStatus;
 import ru.newrecon.subscription_service.exception.NoMorePlacesException;
+import ru.newrecon.subscription_service.exception.UserAlreadySubscribeException;
 import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 
 @Slf4j
@@ -30,13 +31,6 @@ public class SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с id : " + id));
     }
 
-    public List<UUID> findUserIdsByEventId(UUID eventId) {
-        return subscriptionRepository.findByEventId(eventId)
-        .stream()
-        .map(sub -> sub.getUserId())
-        .toList();
-    }
-
     @Transactional
     public void create(CreateEventDto createEventDto) {
         Subscription subscription = new Subscription();
@@ -44,7 +38,7 @@ public class SubscriptionService {
         subscription.setEventId(createEventDto.eventId());
         subscription.setCreateAt(LocalDateTime.now());
         subscription.setParticipantRole(ParticipantRole.OWNER);
-        subscription.setStatus(Status.ACTIVE);
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
 
         counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants());
 
@@ -64,7 +58,11 @@ public class SubscriptionService {
         long subsCount = counterService.decrement(eventId.toString());
 
         if (subsCount < 0) {
-            throw new NoMorePlacesException("Мест на ивент больше нет");
+            throw new NoMorePlacesException("Мест на ивент больше нет " + eventId);
+        }
+
+        if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
+            throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
         }
 
         Subscription subscription = new Subscription();
@@ -72,6 +70,7 @@ public class SubscriptionService {
         subscription.setEventId(eventId);
         subscription.setCreateAt(LocalDateTime.now());
         subscription.setParticipantRole(ParticipantRole.MEMBER);
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
 
         subscriptionRepository.save(subscription);
     }
@@ -81,7 +80,7 @@ public class SubscriptionService {
        Subscription currentSubscription = subscriptionRepository.findByEventIdAndUserId(eventId, userId)
             .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId));
 
-        currentSubscription.setStatus(Status.DELETED);
+        currentSubscription.setStatus(SubscriptionStatus.DELETED);
         subscriptionRepository.save(currentSubscription);
 
         counterService.increment(eventId.toString());

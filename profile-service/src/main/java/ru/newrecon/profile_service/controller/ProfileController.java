@@ -54,12 +54,21 @@ public class ProfileController {
         );
     }
 
+    @PutMapping
+    public UpdateProfileRs update(@AuthenticationPrincipal UUID userId, @RequestBody UpdateProfileRq request) {
+        return profileMapper.mapToUpdateProfileRs(
+            profileService.update(
+                profileMapper.map(userId, request)
+            )
+        );
+    }
+
     @PutMapping("/{id}")
     public UpdateProfileRs updateById(
         @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateProfileRq request
     ) {
         return profileMapper.mapToUpdateProfileRs(
-            profileService.save(
+            profileService.update(
                 profileMapper.map(userId, id, request)
             )
         );

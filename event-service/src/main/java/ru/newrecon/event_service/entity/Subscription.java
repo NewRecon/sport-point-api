@@ -1,4 +1,4 @@
-package ru.newrecon.subscription_service.entity;
+package ru.newrecon.event_service.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,8 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
-import ru.newrecon.subscription_service.entity.enums.SubscriptionStatus;
+import ru.newrecon.event_service.entity.enums.ParticipantRole;
+import ru.newrecon.event_service.entity.enums.SubscriptionStatus;
 
 @Getter
 @Setter

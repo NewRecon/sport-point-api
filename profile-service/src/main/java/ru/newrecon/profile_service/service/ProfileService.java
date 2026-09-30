@@ -3,6 +3,8 @@ package ru.newrecon.profile_service.service;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,6 @@ public class ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найден профиль с userId : " + userId));
     }
 
-
     public Profile save(Profile profile) {
         return profileRepository.save(profile);
     }
@@ -37,6 +38,14 @@ public class ProfileService {
         profile.setName(createUserDto.name());
 
         save(profile);
+    }
+
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public Profile update(Profile profile) {
+        Profile currentProfile = getByUserId(profile.getUserId());
+        currentProfile.setBio(profile.getBio());
+
+        return profileRepository.save(currentProfile);
     }
 
     public void delete(UUID id) {
