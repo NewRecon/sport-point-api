@@ -40,7 +40,7 @@ public class SubscriptionService {
         subscription.setParticipantRole(ParticipantRole.OWNER);
         subscription.setStatus(SubscriptionStatus.ACTIVE);
 
-        counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants());
+        counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants()-1);
 
         subscriptionRepository.save(subscription);
     }
