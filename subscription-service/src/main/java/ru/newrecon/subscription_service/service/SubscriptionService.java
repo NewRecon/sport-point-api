@@ -55,14 +55,14 @@ public class SubscriptionService {
 
     @Transactional
     public void subscribe(UUID userId, UUID eventId) {
+        if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
+            throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
+        }
+
         long subsCount = counterService.decrement(eventId.toString());
 
         if (subsCount < 0) {
             throw new NoMorePlacesException("Мест на ивент больше нет " + eventId);
-        }
-
-        if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
-            throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
         }
 
         Subscription subscription = new Subscription();
