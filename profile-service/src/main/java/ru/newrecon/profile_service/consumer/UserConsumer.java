@@ -12,7 +12,7 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProfileConsumer {
+public class UserConsumer {
 
     private final ObjectMapper kafkObjectMapper;
     private final ProfileService profileService;

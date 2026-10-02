@@ -50,6 +50,23 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-subscription:
+    image: postgres:18.4
+    container_name: subscription-db
+    environment:
+      POSTGRES_DB: subscriptiondb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-subscription-data:/var/lib/postgresql
+    networks:
+      - sport_point_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d subscriptiondb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
     image: redis:8.8.0
     container_name: redis
@@ -91,4 +108,5 @@ volumes:
   postgres-auth-data:
   postgres-profile-data:
   postgres-event-data:
+  postgres-subscription-data:
   redis-data:

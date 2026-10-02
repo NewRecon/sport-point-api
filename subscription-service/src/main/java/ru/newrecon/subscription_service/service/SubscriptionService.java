@@ -1,7 +1,6 @@
 package ru.newrecon.subscription_service.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionSendService subscriptionSendService;
     private final CounterService counterService;
 
     public Subscription getById(UUID id) {
@@ -43,6 +43,8 @@ public class SubscriptionService {
         counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants()-1);
 
         subscriptionRepository.save(subscription);
+
+        subscriptionSendService.sendSubscribe(subscription);
     }
 
     public Subscription save(Subscription Subscription) {
@@ -73,6 +75,8 @@ public class SubscriptionService {
         subscription.setStatus(SubscriptionStatus.ACTIVE);
 
         subscriptionRepository.save(subscription);
+
+        subscriptionSendService.sendSubscribe(subscription);
     }
 
     @Transactional

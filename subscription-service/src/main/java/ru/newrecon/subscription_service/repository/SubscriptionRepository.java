@@ -1,6 +1,5 @@
 package ru.newrecon.subscription_service.repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

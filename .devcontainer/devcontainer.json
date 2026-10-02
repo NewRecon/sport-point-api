@@ -27,9 +27,8 @@
 			"extensions": [
 				"vmware.vscode-boot-dev-pack",
 				"humao.rest-client",
-				"cweijan.dbclient-jdbc",
-				"cweijan.vscode-database-client2",
-				"jeppeandersen.vscode-kafka"
+				"jeppeandersen.vscode-kafka",
+				"ms-ossdata.vscode-pgsql"
 			]
 		}
 	}

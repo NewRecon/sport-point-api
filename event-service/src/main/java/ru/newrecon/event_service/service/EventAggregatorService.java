@@ -15,7 +15,7 @@ import ru.newrecon.event_service.entity.Event;
 public class EventAggregatorService {
 
     private final EventService eventService;
-    private final SubscriptionService subscriptionService;
+    private final EventSubscriptionService subscriptionService;
  
     public GetEventRs getEventPageData(UUID eventId) {
         Event event = eventService.getById(eventId);

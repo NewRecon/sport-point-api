@@ -5,7 +5,7 @@ spring:
     application:
         name: subscription-service
     datasource:
-        url: jdbc:postgresql://event-db:5432/eventdb
+        url: jdbc:postgresql://subscription-db:5432/subscriptiondb
         username: postgres
         password: postgres
         driver-class-name: org.postgresql.Driver
@@ -21,8 +21,13 @@ spring:
             port: 6379
     kafka:
         bootstrap-servers: kafka:9092
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.apache.kafka.common.serialization.StringSerializer
+            security:
+                protocol: PLAINTEXT
         consumer:
-            group-id: subscription-service-group
+            group-id: event-events-group
             auto-offset-reset: earliest
             key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

@@ -13,7 +13,7 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SubscriptionConsumer {
+public class EventConsumer {
 
     private final SubscriptionService subscriptionService;
     private final ObjectMapper kafkObjectMapper;

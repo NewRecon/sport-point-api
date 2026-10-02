@@ -11,7 +11,7 @@ import tools.jackson.databind.ObjectMapper;
 public class KafkaConfig {
 
     @Bean
-    public NewTopic eventCreateEventsTopic() {
+    public NewTopic userCreateEventsTopic() {
         return TopicBuilder.name("create-user-events")
                 .partitions(1)
                 .replicas(1)
