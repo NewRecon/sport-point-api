@@ -29,16 +29,6 @@ public class EventService {
         return eventRepository.findAllByStatus(EventStatus.ACTIVE);
     }
 
-    @Transactional
-    public Event create(Event event) {
-        event.setStatus(EventStatus.ACTIVE);
-        Event currentEvent = eventRepository.save(event);
-
-        eventSendService.sendCreate(currentEvent);
-        
-        return currentEvent;
-    }
-
     public Event save(Event event) {
         return eventRepository.save(event);
     }

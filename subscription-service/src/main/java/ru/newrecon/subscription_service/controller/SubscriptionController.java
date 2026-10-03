@@ -22,6 +22,7 @@ import ru.newrecon.subscription_service.dto.SubscribeRq;
 import ru.newrecon.subscription_service.dto.UnsubscribeRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRq;
 import ru.newrecon.subscription_service.dto.UpdateSubscriptionRs;
+import ru.newrecon.subscription_service.dto.auth.PrincipalDto;
 import ru.newrecon.subscription_service.mapper.SubscriptionMapper;
 import ru.newrecon.subscription_service.service.SubscriptionService;
 
@@ -42,24 +43,24 @@ public class SubscriptionController {
     
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
-    public CreateSubscriptionRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateSubscriptionRq request) {
+    public CreateSubscriptionRs create(@AuthenticationPrincipal PrincipalDto principal, @RequestBody CreateSubscriptionRq request) {
         return subscriptionMapper.mapToCreateSubscriptionRs(
             subscriptionService.save(
-                subscriptionMapper.map(userId, request)
+                subscriptionMapper.map(principal.userId(), request)
             )
         );
     }
 
     @PostMapping("/subscribe")
-    public ResponseEntity<Void> subscribe(@AuthenticationPrincipal UUID userId, @RequestBody SubscribeRq subscribeRq) {
-        subscriptionService.subscribe(userId, subscribeRq.eventId());
+    public ResponseEntity<Void> subscribe(@AuthenticationPrincipal PrincipalDto principal, @RequestBody SubscribeRq subscribeRq) {
+        subscriptionService.subscribe(principal.userId(), subscribeRq.eventId(), principal.username());
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/unsubscribe")
-    public ResponseEntity<Void> unsubscribe(@AuthenticationPrincipal UUID userId, @RequestBody UnsubscribeRq subscribeRq) {
-        subscriptionService.unsubscribe(userId, subscribeRq.eventId());
+    public ResponseEntity<Void> unsubscribe(@AuthenticationPrincipal PrincipalDto principal, @RequestBody UnsubscribeRq subscribeRq) {
+        subscriptionService.unsubscribe(principal.userId(), subscribeRq.eventId());
 
         return ResponseEntity.ok().build();
     }
@@ -67,11 +68,11 @@ public class SubscriptionController {
     @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public UpdateSubscriptionRs updateById(
-        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateSubscriptionRq request
+        @AuthenticationPrincipal PrincipalDto principal, @PathVariable UUID id, @RequestBody UpdateSubscriptionRq request
     ) {
         return subscriptionMapper.mapToUpdateSubscriptionRs(
             subscriptionService.save(
-                subscriptionMapper.map(userId, id, request)
+                subscriptionMapper.map(principal.userId(), id, request)
             )
         );
     }

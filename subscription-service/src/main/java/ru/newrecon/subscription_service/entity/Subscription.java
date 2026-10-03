@@ -27,5 +27,5 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private ParticipantRole participantRole;
     @Enumerated(EnumType.STRING)
-    private SubscriptionStatus status; 
+    private SubscriptionStatus status;
 }

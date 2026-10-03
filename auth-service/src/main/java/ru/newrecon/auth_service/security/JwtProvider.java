@@ -32,12 +32,14 @@ public class JwtProvider {
                 .signWith(key)
                 .claim(ChillClaim.USER_ID.name(), user.getId())
                 .claim(ChillClaim.ROLES.name(), authorities)
+                .claim(ChillClaim.USERNAME.name(), user.getUsername())
                 .expiration(exp)
                 .compact();
     }
 
     public static enum ChillClaim {
         USER_ID,
-        ROLES
+        ROLES,
+        USERNAME
     }
 }

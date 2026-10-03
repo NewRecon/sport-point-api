@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -13,17 +14,22 @@ import ru.newrecon.event_service.repository.EventSubscriptionRepository;
 @RequiredArgsConstructor
 public class EventSubscriptionService {
 
-    private final EventSubscriptionRepository subscriptionRepository;
+    private final EventSubscriptionRepository eventSubscriptionRepository;
 
     public void create(SubscribeSubscriptionDto subscribeSubscriptionDto) {
         EventSubscription eventSubscription = new EventSubscription();
         eventSubscription.setEventId(subscribeSubscriptionDto.eventId());
         eventSubscription.setUserId(subscribeSubscriptionDto.userId());
+        eventSubscription.setUsername(subscribeSubscriptionDto.username());
 
-        subscriptionRepository.save(eventSubscription);
+        eventSubscriptionRepository.save(eventSubscription);
     }
 
-    public int getUserCountByIventId(UUID eventId) {
-        return subscriptionRepository.getUserCountByEventId(eventId);
+    public EventSubscription save(EventSubscription eventSubscription) {
+        return eventSubscriptionRepository.save(eventSubscription);
+    }
+
+    public List<EventSubscription> findAllByEventId(UUID eventId) {
+        return eventSubscriptionRepository.findAllByEventId(eventId);
     }
 }

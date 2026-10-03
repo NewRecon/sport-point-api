@@ -23,6 +23,7 @@ public class ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найден профиль с id : " + id));
     }
 
+
     public Profile getByUserId(UUID userId) {
         return profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Не найден профиль с userId : " + userId));

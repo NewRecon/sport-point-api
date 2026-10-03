@@ -46,6 +46,7 @@ public class JwtAuthenticationFilter implements WebFilter {
 
             UUID userId = jwtProvider.findClaim(token, ChillClaim.USER_ID);
             Set<Role> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
+            String username = jwtProvider.findClaim(token, ChillClaim.USERNAME);
 
             String rolesHeader = roles.isEmpty() ? null : roles.stream()
                     .map(Enum::name)
@@ -54,6 +55,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header("X-UserId", userId.toString())
                     .header("X-Roles", rolesHeader)
+                    .header("X-Username", username)
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());

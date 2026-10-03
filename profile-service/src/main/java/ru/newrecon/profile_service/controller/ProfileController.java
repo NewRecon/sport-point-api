@@ -44,6 +44,13 @@ public class ProfileController {
             profileService.getById(id)
         );
     }
+
+    @GetMapping("/user/{userId}")
+    public GetProfileRs getByUserId(@PathVariable UUID userId) {
+        return profileMapper.mapToGetProfileRs(
+            profileService.getByUserId(userId)
+        );
+    }
     
     @PostMapping
     public CreateProfileRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateProfileRq request) {

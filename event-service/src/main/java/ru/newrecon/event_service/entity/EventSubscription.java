@@ -18,4 +18,5 @@ public class EventSubscription {
     private UUID id;
     private UUID userId;
     private UUID eventId;
+    private String username;
 }

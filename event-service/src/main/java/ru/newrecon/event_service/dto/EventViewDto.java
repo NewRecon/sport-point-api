@@ -1,9 +1,12 @@
 package ru.newrecon.event_service.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
-public record GetEventRs(
+import ru.newrecon.event_service.entity.EventSubscription;
+
+public record EventViewDto(
     UUID id,
     String title,
     String locationName,
@@ -13,5 +16,5 @@ public record GetEventRs(
     LocalDateTime date,
     UUID ownerId,
     int totalParticipants,
-    int currentParticipants
+    List<EventSubscription> eventSubscriptions
 ) {}

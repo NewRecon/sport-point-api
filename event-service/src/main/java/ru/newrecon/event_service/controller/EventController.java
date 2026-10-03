@@ -16,9 +16,10 @@ import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.dto.CreateEventRq;
 import ru.newrecon.event_service.dto.CreateEventRs;
 import ru.newrecon.event_service.dto.DeleteEventRq;
-import ru.newrecon.event_service.dto.GetEventRs;
+import ru.newrecon.event_service.dto.GetViewEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
+import ru.newrecon.event_service.dto.auth.PrincipalDto;
 import ru.newrecon.event_service.mapper.EventMapper;
 import ru.newrecon.event_service.service.EventAggregatorService;
 import ru.newrecon.event_service.service.EventService;
@@ -38,30 +39,32 @@ public class EventController {
     private final EventAggregatorService eventAggregatorService;
 
     @GetMapping("/{id}")
-    public GetEventRs getById(@PathVariable UUID id) {
-        return eventAggregatorService.getEventPageData(id);
+    public GetViewEventRs getViewById(@PathVariable UUID id) {
+        return eventMapper.mapToGetViewEventRs(
+            eventAggregatorService.getEventViewData(id)
+        );
     }
 
     @GetMapping
-    public List<GetEventRs> findAllActive() {
+    public List<GetViewEventRs> findAllActive() {
         return eventMapper.mapToGetEventRs(
             eventService.findAllActive()
         );
     }
     
     @PostMapping
-    public CreateEventRs create(@AuthenticationPrincipal UUID userId, @RequestBody CreateEventRq request) {
+    public CreateEventRs create(@AuthenticationPrincipal PrincipalDto principal, @RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(
-           eventService.create(eventMapper.map(userId, request))
+           eventAggregatorService.createEvent(eventMapper.map(principal.userId(), request), principal.username())
         );
     }
 
     @PutMapping("/{id}")
     public UpdateEventRs updateById(
-        @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateEventRq request
+        @AuthenticationPrincipal PrincipalDto principal, @PathVariable UUID id, @RequestBody UpdateEventRq request
     ) {
         return eventMapper.mapToUpdateEventRs(
-            eventService.save(eventMapper.map(userId, id, request))
+            eventService.save(eventMapper.map(principal.userId(), id, request))
         );
     }
 

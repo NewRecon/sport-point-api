@@ -15,6 +15,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.newrecon.subscription_service.dto.auth.PrincipalDto;
 
 public class AuthFilter extends OncePerRequestFilter {
 
@@ -25,6 +26,7 @@ public class AuthFilter extends OncePerRequestFilter {
         
         String userId = request.getHeader("X-UserId");
         String rolesHeader = request.getHeader("X-Roles");
+        String username = request.getHeader("X-Username");
 
         if (Strings.isEmpty(userId)) {
             filterChain.doFilter(request, response);
@@ -40,8 +42,10 @@ public class AuthFilter extends OncePerRequestFilter {
                     .toList();
         }
 
+        PrincipalDto principalDto = new PrincipalDto(UUID.fromString(userId), username);
+
         UsernamePasswordAuthenticationToken auth = 
-                    new UsernamePasswordAuthenticationToken(UUID.fromString(userId), null, roles);
+                    new UsernamePasswordAuthenticationToken(principalDto, null, roles);
         SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
     }

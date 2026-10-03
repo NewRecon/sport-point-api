@@ -17,10 +17,10 @@ public class SubscriptionSendService {
     private final SubscriptionProducer subscriptionProducer;
     private final ObjectMapper kafkObjectMapper;
 
-    public void sendSubscribe(Subscription subscription) {
+    public void sendSubscribe(Subscription subscription, String username) {
 
         SubscribeSubscriptionDto createEventDto = new SubscribeSubscriptionDto(
-            subscription.getUserId(), subscription.getEventId()
+            subscription.getUserId(), subscription.getEventId(), username
         );
 
         String kafkaMessage = kafkObjectMapper.writeValueAsString(createEventDto);

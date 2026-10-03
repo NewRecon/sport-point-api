@@ -64,6 +64,7 @@ public class JwtProvider {
                 return "ROLES";
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public Set<Role> extract(Claims claims) {
                 List<String> roles = claims.get(getName(), List.class);
@@ -75,6 +76,20 @@ public class JwtProvider {
                 return roles.stream()
                         .map(Role::valueOf)
                         .collect(Collectors.toSet());
+            }
+        };
+
+        ChillClaim<String> USERNAME = new ChillClaim<>() {
+            @Override
+            public String getName() { 
+                return "USERNAME";
+            }
+
+            @Override
+            public String extract(Claims claims) {
+                String username = claims.get(getName(), String.class);
+
+                return username;
             }
         };
     }

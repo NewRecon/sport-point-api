@@ -9,7 +9,8 @@ import org.mapstruct.Mapping;
 import ru.newrecon.event_service.config.MapstructConfig;
 import ru.newrecon.event_service.dto.CreateEventRq;
 import ru.newrecon.event_service.dto.CreateEventRs;
-import ru.newrecon.event_service.dto.GetEventRs;
+import ru.newrecon.event_service.dto.EventViewDto;
+import ru.newrecon.event_service.dto.GetViewEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
 import ru.newrecon.event_service.entity.Event;
@@ -26,7 +27,7 @@ public interface EventMapper {
 
     UpdateEventRs mapToUpdateEventRs(Event source);
 
-    GetEventRs mapToGetEventRs(Event source);
+    GetViewEventRs mapToGetViewEventRs(EventViewDto source);
     
-    List<GetEventRs> mapToGetEventRs(List<Event> source);
+    List<GetViewEventRs> mapToGetEventRs(List<Event> source);
 }

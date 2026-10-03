@@ -3,12 +3,15 @@ package ru.newrecon.subscription_service.service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.newrecon.subscription_service.dto.auth.PrincipalDto;
 import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
@@ -43,8 +46,6 @@ public class SubscriptionService {
         counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants()-1);
 
         subscriptionRepository.save(subscription);
-
-        subscriptionSendService.sendSubscribe(subscription);
     }
 
     public Subscription save(Subscription Subscription) {
@@ -56,7 +57,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void subscribe(UUID userId, UUID eventId) {
+    public void subscribe(UUID userId, UUID eventId, String username) {
         if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
             throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
         }
@@ -76,7 +77,7 @@ public class SubscriptionService {
 
         subscriptionRepository.save(subscription);
 
-        subscriptionSendService.sendSubscribe(subscription);
+        subscriptionSendService.sendSubscribe(subscription, username);
     }
 
     @Transactional
