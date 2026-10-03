@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.newrecon.subscription_service.dto.kafka.SubscribeSubscriptionDto;
 import ru.newrecon.subscription_service.entity.Subscription;
-import ru.newrecon.subscription_service.producer.SubscriptionProducer;
+import ru.newrecon.subscription_service.kafka.payload.SubscribeSubscriptionPayload;
+import ru.newrecon.subscription_service.kafka.producer.SubscriptionProducer;
 import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
@@ -19,7 +19,7 @@ public class SubscriptionSendService {
 
     public void sendSubscribe(Subscription subscription, String username) {
 
-        SubscribeSubscriptionDto createEventDto = new SubscribeSubscriptionDto(
+        SubscribeSubscriptionPayload createEventDto = new SubscribeSubscriptionPayload(
             subscription.getUserId(), subscription.getEventId(), username
         );
 

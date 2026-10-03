@@ -19,9 +19,11 @@ public interface SubscriptionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Subscription map(UUID userId, CreateSubscriptionRq source);
 
     @Mapping(target = "createAt", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Subscription map(UUID userId, UUID id, UpdateSubscriptionRq source);
 
     CreateSubscriptionRs mapToCreateSubscriptionRs(Subscription source);

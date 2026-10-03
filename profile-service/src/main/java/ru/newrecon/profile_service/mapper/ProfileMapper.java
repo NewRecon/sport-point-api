@@ -19,6 +19,7 @@ public interface ProfileMapper {
     @Mapping(target = "id", ignore = true)
     Profile map(UUID userId, CreateProfileRq source);
 
+    @Mapping(target = "id", ignore = true)
     Profile map(UUID userId, UpdateProfileRq source);
 
     Profile map(UUID userId, UUID id, UpdateProfileRq source);

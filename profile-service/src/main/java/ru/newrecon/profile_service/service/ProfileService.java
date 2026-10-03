@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.profile_service.dto.kafka.CreateUserDto;
 import ru.newrecon.profile_service.entity.Profile;
+import ru.newrecon.profile_service.kafka.payload.CreateUserPayload;
 import ru.newrecon.profile_service.repository.ProfileRepository;
 
 @Service
@@ -33,7 +33,7 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
-    public void create(CreateUserDto createUserDto) {
+    public void create(CreateUserPayload createUserDto) {
         Profile profile = new Profile();
         profile.setUserId(createUserDto.userId());
         profile.setName(createUserDto.name());

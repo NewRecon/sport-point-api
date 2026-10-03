@@ -3,21 +3,18 @@ package ru.newrecon.subscription_service.service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.newrecon.subscription_service.dto.auth.PrincipalDto;
-import ru.newrecon.subscription_service.dto.kafka.CreateEventDto;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
 import ru.newrecon.subscription_service.entity.enums.SubscriptionStatus;
 import ru.newrecon.subscription_service.exception.NoMorePlacesException;
 import ru.newrecon.subscription_service.exception.UserAlreadySubscribeException;
+import ru.newrecon.subscription_service.kafka.payload.CreateEventPayload;
 import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 
 @Slf4j
@@ -35,7 +32,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void create(CreateEventDto createEventDto) {
+    public void create(CreateEventPayload createEventDto) {
         Subscription subscription = new Subscription();
         subscription.setUserId(createEventDto.userId());
         subscription.setEventId(createEventDto.eventId());

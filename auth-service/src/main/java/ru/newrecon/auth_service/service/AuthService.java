@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import ru.newrecon.auth_service.entity.User;
 import ru.newrecon.auth_service.exception.UnauthorizedException;
 import ru.newrecon.auth_service.security.JwtProvider;
+import ru.newrecon.auth_service.service.user.UserOutboxFacade;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class AuthService {
     
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-    private final UserService userService;
+    private final UserOutboxFacade userOutboxFacade;
     private final PasswordEncoder passwordEncoder;
 
     public String authenticate(String username, String password) {
@@ -50,7 +52,7 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(Set.of());
 
-        User user = (User) userService.create(newUser);
+        User user = (User) userOutboxFacade.create(newUser);
 
         return jwtProvider.generateToken(user); 
     }

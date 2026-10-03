@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.dto.CreateEventRq;
 import ru.newrecon.event_service.dto.CreateEventRs;
 import ru.newrecon.event_service.dto.DeleteEventRq;
+import ru.newrecon.event_service.dto.GetEventRs;
 import ru.newrecon.event_service.dto.GetViewEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
@@ -46,7 +47,7 @@ public class EventController {
     }
 
     @GetMapping
-    public List<GetViewEventRs> findAllActive() {
+    public List<GetEventRs> findAllActive() {
         return eventMapper.mapToGetEventRs(
             eventService.findAllActive()
         );

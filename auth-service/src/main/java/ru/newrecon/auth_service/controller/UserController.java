@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.auth_service.dto.AssignRoleRq;
 import ru.newrecon.auth_service.dto.RevokeRoleRq;
-import ru.newrecon.auth_service.service.UserService;
+import ru.newrecon.auth_service.service.user.UserService;
 
 
 @RestController

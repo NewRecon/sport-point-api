@@ -3,10 +3,10 @@ package ru.newrecon.event_service.service;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.event_service.dto.kafka.CreateEventDto;
-import ru.newrecon.event_service.dto.kafka.DeleteEventDto;
 import ru.newrecon.event_service.entity.Event;
-import ru.newrecon.event_service.producer.EventProducer;
+import ru.newrecon.event_service.kafka.payload.CreateEventPayload;
+import ru.newrecon.event_service.kafka.payload.DeleteEventPayload;
+import ru.newrecon.event_service.kafka.producer.EventProducer;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
@@ -17,8 +17,7 @@ public class EventSendService {
     private final ObjectMapper kafkObjectMapper;
 
     public void sendCreate(Event event) {
-
-        CreateEventDto createEventDto = new CreateEventDto(
+        CreateEventPayload createEventDto = new CreateEventPayload(
             event.getId(), event.getOwnerId(), event.getTotalParticipants()
         );
 
@@ -27,8 +26,7 @@ public class EventSendService {
     }
 
     public void sendDelete(Event event) {
-
-        DeleteEventDto deleteEventDto = new DeleteEventDto(event.getId());
+        DeleteEventPayload deleteEventDto = new DeleteEventPayload(event.getId());
 
         String kafkaMessage = kafkObjectMapper.writeValueAsString(deleteEventDto);
         eventProducer.sendDelete(kafkaMessage);

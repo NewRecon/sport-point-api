@@ -6,8 +6,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.event_service.dto.kafka.SubscribeSubscriptionDto;
 import ru.newrecon.event_service.entity.EventSubscription;
+import ru.newrecon.event_service.kafka.payload.SubscribeSubscriptionPayload;
 import ru.newrecon.event_service.repository.EventSubscriptionRepository;
 
 @Service
@@ -16,7 +16,7 @@ public class EventSubscriptionService {
 
     private final EventSubscriptionRepository eventSubscriptionRepository;
 
-    public void create(SubscribeSubscriptionDto subscribeSubscriptionDto) {
+    public void create(SubscribeSubscriptionPayload subscribeSubscriptionDto) {
         EventSubscription eventSubscription = new EventSubscription();
         eventSubscription.setEventId(subscribeSubscriptionDto.eventId());
         eventSubscription.setUserId(subscribeSubscriptionDto.userId());

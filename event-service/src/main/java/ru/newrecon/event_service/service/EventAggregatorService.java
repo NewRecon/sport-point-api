@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.event_service.dto.EventViewDto;
-import ru.newrecon.event_service.dto.GetViewEventRs;
 import ru.newrecon.event_service.entity.Event;
 import ru.newrecon.event_service.entity.EventSubscription;
 import ru.newrecon.event_service.entity.enums.EventStatus;
