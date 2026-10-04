@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.auth_service.service.outbox.OutboxDispatcher;
+import ru.newrecon.auth_service.service.outbox.OutboxMessageService;
 
 @Slf4j 
 @Component 
@@ -13,9 +14,17 @@ import ru.newrecon.auth_service.service.outbox.OutboxDispatcher;
 public class OutboxScheduler {
 
     private final OutboxDispatcher outboxFacade;
+    private final OutboxMessageService outboxMessageService;
 
-    @Scheduled(cron = "${scheduler.outbox.crone}")
+    @Scheduled(fixedDelayString = "${outbox.scheduler.send-delay-ms}")
     public void sendEvents() {
-        outboxFacade.sendAll();
+        log.info("запущена отправка sendEvents");
+        outboxFacade.runSendProcess();
+    }
+
+    @Scheduled(cron = "${outbox.scheduler.delete-crone}")
+    public void deleteEventsinSentStatus() {
+        log.info("запущена удаление sendEvents в статусе SENT");
+        outboxMessageService.deleteAllInSentStatus();
     }
 }

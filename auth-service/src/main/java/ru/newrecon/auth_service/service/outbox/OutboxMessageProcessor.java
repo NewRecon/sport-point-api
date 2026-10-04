@@ -8,16 +8,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxEvent;
-import ru.newrecon.auth_service.entity.enums.OutboxStatus;
+import ru.newrecon.auth_service.entity.OutboxMessage;
+import ru.newrecon.auth_service.enums.OutboxMessageStatus;
 import ru.newrecon.auth_service.kafka.producer.UserProducer;
-import ru.newrecon.auth_service.service.OutboxEventService;
 
 @Service 
 @RequiredArgsConstructor 
 public class OutboxMessageProcessor {
 
-    private final OutboxEventService outboxEventService;
+    private final OutboxMessageService outboxMessageService;
     private final UserProducer userProducer;
 
     @Value("${outbox.max-attemt}")
@@ -26,24 +25,24 @@ public class OutboxMessageProcessor {
     private long attemptDelay;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void process(OutboxEvent outboxEvent) {
+    public void process(OutboxMessage outboxMessage) {
         try {
             userProducer.send(
-                outboxEvent.getEventType().getTopic(), outboxEvent.getEntityId().toString(), outboxEvent.getPayload()
+                outboxMessage.getEventType().getTopic(), outboxMessage.getEntityId().toString(), outboxMessage.getPayload()
             );
-            outboxEvent.setStatus(OutboxStatus.SENT);
+            outboxMessage.setStatus(OutboxMessageStatus.SENT);
         } catch (Exception e) {
-            outboxEvent.setLastError(e.getMessage());
-            outboxEvent.setAttemptCount(outboxEvent.getAttemptCount()+1);
-            if(outboxEvent.getAttemptCount() >= maxAttemptCount) {
-                outboxEvent.setStatus(OutboxStatus.FAILED);
+            outboxMessage.setLastError(e.getMessage());
+            outboxMessage.setAttemptCount(outboxMessage.getAttemptCount()+1);
+            if(outboxMessage.getAttemptCount() >= maxAttemptCount) {
+                outboxMessage.setStatus(OutboxMessageStatus.FAILED);
             } else {
-                outboxEvent.setStatus(OutboxStatus.PENDING);
-                outboxEvent.setNextAttemptAt(LocalDateTime.now().plusSeconds(attemptDelay));
+                outboxMessage.setStatus(OutboxMessageStatus.PENDING);
+                outboxMessage.setNextAttemptAt(LocalDateTime.now().plusSeconds(attemptDelay));
             }
             
         }
 
-        outboxEventService.updateAfterSent(outboxEvent);
+        outboxMessageService.updateAfterSent(outboxMessage);
     }
 }

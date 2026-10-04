@@ -19,24 +19,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import ru.newrecon.auth_service.entity.enums.OutboxEventType;
-import ru.newrecon.auth_service.entity.enums.OutboxStatus;
+import ru.newrecon.auth_service.enums.OutboxMessageEventType;
+import ru.newrecon.auth_service.enums.OutboxMessageStatus;
 
 @Getter 
 @Setter 
 @Entity 
 @EntityListeners(AuditingEntityListener.class)
-public class OutboxEvent {
+public class OutboxMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private UUID entityId;
     @Enumerated(EnumType.STRING)
-    private OutboxEventType eventType;
+    private OutboxMessageEventType eventType;
     @JdbcTypeCode(SqlTypes.JSON)
     private String payload; 
     @Enumerated(EnumType.STRING)
-    private OutboxStatus status;
+    private OutboxMessageStatus status;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate

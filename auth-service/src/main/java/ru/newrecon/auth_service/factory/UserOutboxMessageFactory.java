@@ -6,34 +6,33 @@ import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxEvent;
+import ru.newrecon.auth_service.entity.OutboxMessage;
 import ru.newrecon.auth_service.entity.User;
-import ru.newrecon.auth_service.entity.enums.OutboxEventType;
-import ru.newrecon.auth_service.entity.enums.OutboxStatus;
+import ru.newrecon.auth_service.enums.OutboxMessageEventType;
+import ru.newrecon.auth_service.enums.OutboxMessageStatus;
 import ru.newrecon.auth_service.kafka.payload.CreateUserPayload;
 import tools.jackson.databind.ObjectMapper;
 
 @Component
 @RequiredArgsConstructor
-public class UserOutboxEventsFactory {
+public class UserOutboxMessageFactory {
 
     private final ObjectMapper objectMapper;
 
-    public OutboxEvent created(User user) {
-
+    public OutboxMessage created(User user) {
         UUID idempotencyKey = UUID.randomUUID();
 
         String payload = objectMapper.writeValueAsString(buildCreateUserDto(user, idempotencyKey));
 
-        OutboxEvent outboxEvent = new OutboxEvent();
-        outboxEvent.setEntityId(user.getId());
-        outboxEvent.setStatus(OutboxStatus.PENDING);
-        outboxEvent.setEventType(OutboxEventType.CREATE);
-        outboxEvent.setIdempotencyKey(idempotencyKey);
-        outboxEvent.setNextAttemptAt(LocalDateTime.now());
-        outboxEvent.setPayload(payload);
+        OutboxMessage outboxMessage = new OutboxMessage();
+        outboxMessage.setEntityId(user.getId());
+        outboxMessage.setStatus(OutboxMessageStatus.PENDING);
+        outboxMessage.setEventType(OutboxMessageEventType.CREATE);
+        outboxMessage.setIdempotencyKey(idempotencyKey);
+        outboxMessage.setNextAttemptAt(LocalDateTime.now());
+        outboxMessage.setPayload(payload);
 
-        return outboxEvent;
+        return outboxMessage;
     }
 
     private CreateUserPayload buildCreateUserDto(User user, UUID idempotencyKey) {

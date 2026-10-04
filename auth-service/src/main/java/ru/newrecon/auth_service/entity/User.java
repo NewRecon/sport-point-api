@@ -15,7 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Setter;
-import ru.newrecon.auth_service.entity.enums.Role;
+import ru.newrecon.auth_service.enums.UserRole;
 
 @Setter
 @Entity
@@ -27,10 +27,10 @@ public class User implements UserDetails {
     private String name;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+    private Set<UserRole> roles;
 
     @Override
-    public Collection<Role> getAuthorities() {
+    public Collection<UserRole> getAuthorities() {
         return roles;
     }
 

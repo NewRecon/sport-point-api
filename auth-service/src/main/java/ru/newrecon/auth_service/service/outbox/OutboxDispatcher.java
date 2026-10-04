@@ -6,29 +6,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxEvent;
-import ru.newrecon.auth_service.service.OutboxEventService;
+import ru.newrecon.auth_service.entity.OutboxMessage;
 
 @Service 
 @RequiredArgsConstructor 
 public class OutboxDispatcher {
 
-    private final OutboxEventService outboxEventService;
+    private final OutboxMessageService outboxMessageService;
     private final OutboxMessageProcessor outboxMessageProcessor;
 
-    @Value("${outbox.bath-size}")
-    private int outboxBatchSize;
+    @Value("${outbox.batch-size}")
+    private Integer outboxBatchSize;
 
-    public void sendAll() {
-        List<OutboxEvent> outboxEventsIds = outboxEventService.updatePendingStatusOnProcessing(outboxBatchSize);
+    public void runSendProcess() {
+        List<OutboxMessage> outboxMessage = outboxMessageService.updatePendingStatusOnProcessing(outboxBatchSize);
 
-        while(outboxEventsIds.size() > 0) {
-            outboxEventsIds.stream()
-                .forEach(eventId -> {
-                    outboxMessageProcessor.process(eventId);
-                });
-
-            outboxEventsIds = outboxEventService.updatePendingStatusOnProcessing(outboxBatchSize);
-        }
+        outboxMessage.stream()
+            .forEach(eventId -> {
+                outboxMessageProcessor.process(eventId);
+            });
     }
 }

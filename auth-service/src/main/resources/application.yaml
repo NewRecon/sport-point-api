@@ -27,11 +27,10 @@ jwt:
     key: my-super-secret-test-key-for-jwt
     expiration: 43200000
 
-scheduler:
-    outbox:
-        crone: "0 */1 * * * *"
-
 outbox:
+    scheduler:
+        send-delay-ms: 1000
+        delete-crone: "0 */1 * * * *"
     batch-size: 10
     max-attemt: 5
     attempt-delay-sec: 3600

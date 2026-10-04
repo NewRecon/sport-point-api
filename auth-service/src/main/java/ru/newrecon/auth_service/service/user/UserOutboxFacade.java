@@ -5,25 +5,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxEvent;
+import ru.newrecon.auth_service.entity.OutboxMessage;
 import ru.newrecon.auth_service.entity.User;
-import ru.newrecon.auth_service.factory.UserOutboxEventsFactory;
-import ru.newrecon.auth_service.service.OutboxEventService;
+import ru.newrecon.auth_service.factory.UserOutboxMessageFactory;
+import ru.newrecon.auth_service.service.outbox.OutboxMessageService;
 
 @Service 
 @RequiredArgsConstructor 
 public class UserOutboxFacade {
 
     private final UserService userService;
-    private final OutboxEventService outboxEventService;
-    private final UserOutboxEventsFactory userOutboxEventsFactory;
+    private final OutboxMessageService outboxMessageService;
+    private final UserOutboxMessageFactory userOutboxMessageFactory;
 
     @Transactional
     public UserDetails create(User user) {
         UserDetails userdetails = userService.save(user);
 
-        OutboxEvent outboxEvent = userOutboxEventsFactory.created(user);
-        outboxEventService.save(outboxEvent);
+        OutboxMessage outboxMessage = userOutboxMessageFactory.created(user);
+        outboxMessageService.save(outboxMessage);
 
         return userdetails;
     }

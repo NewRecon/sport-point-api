@@ -1,9 +1,9 @@
-package ru.newrecon.auth_service.entity.enums;
+package ru.newrecon.auth_service.enums;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
-public enum Role implements GrantedAuthority {
+public enum UserRole implements GrantedAuthority {
     ROLE_MANAGER,
     ROLE_ADMIN;
 
