@@ -11,8 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import ru.newrecon.subscription_service.entity.enums.ParticipantRole;
-import ru.newrecon.subscription_service.entity.enums.SubscriptionStatus;
+import ru.newrecon.subscription_service.enums.ParticipantRole;
+import ru.newrecon.subscription_service.enums.SubscriptionStatus;
 
 @Getter
 @Setter

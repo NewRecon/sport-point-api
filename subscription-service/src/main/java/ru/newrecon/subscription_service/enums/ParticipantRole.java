@@ -1,4 +1,4 @@
-package ru.newrecon.subscription_service.entity.enums;
+package ru.newrecon.subscription_service.enums;
 
 public enum ParticipantRole {
     MEMBER,

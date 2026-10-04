@@ -22,13 +22,13 @@ public class EventSendService {
         );
 
         String kafkaMessage = kafkObjectMapper.writeValueAsString(createEventDto);
-        eventProducer.sendCreate(kafkaMessage);
+        eventProducer.send("create-event-events", event.getId().toString(), kafkaMessage);
     }
 
     public void sendDelete(Event event) {
         DeleteEventPayload deleteEventDto = new DeleteEventPayload(event.getId());
 
         String kafkaMessage = kafkObjectMapper.writeValueAsString(deleteEventDto);
-        eventProducer.sendDelete(kafkaMessage);
+        eventProducer.send("delete-event-events", event.getId().toString(), kafkaMessage);
     }
 }

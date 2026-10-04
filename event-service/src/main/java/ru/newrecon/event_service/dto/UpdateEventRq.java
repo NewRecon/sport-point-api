@@ -2,7 +2,7 @@ package ru.newrecon.event_service.dto;
 
 import java.time.LocalDateTime;
 
-import ru.newrecon.event_service.entity.enums.EventStatus;
+import ru.newrecon.event_service.enums.EventStatus;
 
 public record UpdateEventRq(
     String title,

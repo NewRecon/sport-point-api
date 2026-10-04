@@ -10,7 +10,7 @@ import ru.newrecon.auth_service.entity.OutboxMessage;
 
 @Service 
 @RequiredArgsConstructor 
-public class OutboxDispatcher {
+public class OutboxMessageDispatcher {
 
     private final OutboxMessageService outboxMessageService;
     private final OutboxMessageProcessor outboxMessageProcessor;

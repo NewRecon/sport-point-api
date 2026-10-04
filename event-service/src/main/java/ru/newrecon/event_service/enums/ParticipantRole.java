@@ -1,4 +1,4 @@
-package ru.newrecon.event_service.entity.enums;
+package ru.newrecon.event_service.enums;
 
 public enum ParticipantRole {
     MEMBER,

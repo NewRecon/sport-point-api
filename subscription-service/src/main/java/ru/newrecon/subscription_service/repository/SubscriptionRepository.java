@@ -16,7 +16,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, UUID
     @Transactional
     @Query("""
             UPDATE Subscription s 
-            SET s.status = ru.newrecon.subscription_service.entity.enums.SubscriptionStatus.DELETED
+            SET s.status = ru.newrecon.subscription_service.enums.SubscriptionStatus.DELETED
             WHERE s.eventId = :eventId
             """)
     int deleteByEventId(UUID eventId);

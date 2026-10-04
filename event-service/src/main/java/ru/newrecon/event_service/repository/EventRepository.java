@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import ru.newrecon.event_service.entity.Event;
-import ru.newrecon.event_service.entity.enums.EventStatus;
+import ru.newrecon.event_service.enums.EventStatus;
 
 public interface EventRepository extends JpaRepository<Event, UUID> {
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.newrecon.auth_service.service.outbox.OutboxDispatcher;
+import ru.newrecon.auth_service.service.outbox.OutboxMessageDispatcher;
 import ru.newrecon.auth_service.service.outbox.OutboxMessageService;
 
 @Slf4j 
@@ -13,7 +13,7 @@ import ru.newrecon.auth_service.service.outbox.OutboxMessageService;
 @RequiredArgsConstructor 
 public class OutboxScheduler {
 
-    private final OutboxDispatcher outboxFacade;
+    private final OutboxMessageDispatcher outboxFacade;
     private final OutboxMessageService outboxMessageService;
 
     @Scheduled(fixedDelayString = "${outbox.scheduler.send-delay-ms}")

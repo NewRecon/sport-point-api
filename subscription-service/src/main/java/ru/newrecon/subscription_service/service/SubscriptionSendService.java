@@ -24,6 +24,6 @@ public class SubscriptionSendService {
         );
 
         String kafkaMessage = kafkObjectMapper.writeValueAsString(createEventDto);
-        subscriptionProducer.sendCreate(kafkaMessage);
+        subscriptionProducer.send("subscribe-subscription-events", subscription.getId().toString(), kafkaMessage);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.entity.Event;
-import ru.newrecon.event_service.entity.enums.EventStatus;
+import ru.newrecon.event_service.enums.EventStatus;
 import ru.newrecon.event_service.repository.EventRepository;
 
 @Service

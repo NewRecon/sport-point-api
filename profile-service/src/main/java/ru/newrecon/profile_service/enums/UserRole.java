@@ -3,7 +3,7 @@ package ru.newrecon.profile_service.enums;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 
-public enum Role implements GrantedAuthority {
+public enum UserRole implements GrantedAuthority {
     ROLE_MANAGER,
     ROLE_ADMIN;
 

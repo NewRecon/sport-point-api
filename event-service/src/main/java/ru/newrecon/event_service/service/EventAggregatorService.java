@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.event_service.dto.EventViewDto;
 import ru.newrecon.event_service.entity.Event;
 import ru.newrecon.event_service.entity.EventSubscription;
-import ru.newrecon.event_service.entity.enums.EventStatus;
+import ru.newrecon.event_service.enums.EventStatus;
 
 @Slf4j
 @Service

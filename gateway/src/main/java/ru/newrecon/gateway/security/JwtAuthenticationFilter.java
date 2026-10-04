@@ -20,7 +20,7 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-import ru.newrecon.gateway.enums.Role;
+import ru.newrecon.gateway.enums.UserRole;
 import ru.newrecon.gateway.security.JwtProvider.ChillClaim;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             String token = authHeader.substring(7);
 
             UUID userId = jwtProvider.findClaim(token, ChillClaim.USER_ID);
-            Set<Role> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
+            Set<UserRole> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
             String username = jwtProvider.findClaim(token, ChillClaim.USERNAME);
 
             String rolesHeader = roles.isEmpty() ? null : roles.stream()

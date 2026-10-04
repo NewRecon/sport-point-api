@@ -11,11 +11,7 @@ public class EventProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendCreate(String message) {
-        kafkaTemplate.send("create-event-events", message);
-    }
-
-    public void sendDelete(String message) {
-        kafkaTemplate.send("delete-event-events", message);
+    public void send(String topic, String entityId, String payload) {
+        kafkaTemplate.send(topic, entityId, payload);
     }
 }

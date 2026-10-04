@@ -23,7 +23,7 @@ spring:
             security:
                 protocol: PLAINTEXT
         consumer:
-            group-id: subscription-events-group
+            group-id: event-subscription-group
             auto-offset-reset: earliest
             key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
             value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

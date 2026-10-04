@@ -16,7 +16,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import ru.newrecon.gateway.enums.Role;
+import ru.newrecon.gateway.enums.UserRole;
 
 @Component
 public class JwtProvider {
@@ -58,7 +58,7 @@ public class JwtProvider {
             }
         };
 
-        ChillClaim<Set<Role>> ROLES = new ChillClaim<>() {
+        ChillClaim<Set<UserRole>> ROLES = new ChillClaim<>() {
             @Override
             public String getName() {
                 return "ROLES";
@@ -66,7 +66,7 @@ public class JwtProvider {
 
             @SuppressWarnings("unchecked")
             @Override
-            public Set<Role> extract(Claims claims) {
+            public Set<UserRole> extract(Claims claims) {
                 List<String> roles = claims.get(getName(), List.class);
 
                 if (roles == null) {
@@ -74,7 +74,7 @@ public class JwtProvider {
                 }
             
                 return roles.stream()
-                        .map(Role::valueOf)
+                        .map(UserRole::valueOf)
                         .collect(Collectors.toSet());
             }
         };
