@@ -1,4 +1,4 @@
-package ru.newrecon.auth_service.service.outbox;
+package ru.newrecon.event_service.service.outbox;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxMessage;
+import ru.newrecon.event_service.entity.OutboxMessage;
 
 @Service 
 @RequiredArgsConstructor 

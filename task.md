@@ -36,3 +36,21 @@
 [] переписать общий докер компоуз, добавить туда имеджи сервисов
 [] публиковать имеджи в докер хаб, разворачивать на впс через локальный докер компоуз
 [] настроить домен https://www.noip.com/
+
+
+TODO
+- вынести аутбокс реализации отдельно
+    точки АПИ - OutboxMessageEventType(оттуда топики берутся) и Producer.send(можно подложить интерфейс и реализовывать в продюсерах в микросах) + удалить SendService +  добавить OutboxFacade где будет сохранение payload и создание OutboxMessage и сохранение в таблицу OutboxMessageRepository
+
+    весь модуль:
+    (OutboxMessage, JpaConfig, OutboxMessageEventType, OutboxMessageStatus, OutboxMessageRepository, OutboxScheduler, OutboxMessageDispatcher, OutboxMessageProcessor, OutboxMessageService)
+    конфигурация:
+```
+outbox:
+    scheduler:
+        send-delay-ms: 1000
+        delete-crone: "0 */1 * * * *"
+    batch-size: 10
+    max-attemt: 5
+    attempt-delay-sec: 3600
+```

@@ -33,6 +33,7 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
+    // TODO воняет
     public void create(CreateUserPayload createUserDto) {
         Profile profile = new Profile();
         profile.setUserId(createUserDto.userId());

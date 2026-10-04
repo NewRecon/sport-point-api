@@ -16,6 +16,7 @@ public class EventSubscriptionService {
 
     private final EventSubscriptionRepository eventSubscriptionRepository;
 
+    // TODO воняет
     public void create(SubscribeSubscriptionPayload subscribeSubscriptionDto) {
         EventSubscription eventSubscription = new EventSubscription();
         eventSubscription.setEventId(subscribeSubscriptionDto.eventId());

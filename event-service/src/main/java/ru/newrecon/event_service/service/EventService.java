@@ -18,7 +18,9 @@ import ru.newrecon.event_service.repository.EventRepository;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final EventSendService eventSendService;
+
+    // TODO воняет - вынести отправку в отдельный слой
+    private final EventOutboxFacade eventOutboxFacade;
 
     public Event getById(UUID id) {
         return eventRepository.findById(id)
@@ -44,7 +46,7 @@ public class EventService {
         currentEvent.setStatus(EventStatus.DELETED);
         eventRepository.save(currentEvent);
 
-        eventSendService.sendDelete(currentEvent);
+        eventOutboxFacade.saveDeleteEventEvent(currentEvent);
     }
 
     public int deleteExpired() {

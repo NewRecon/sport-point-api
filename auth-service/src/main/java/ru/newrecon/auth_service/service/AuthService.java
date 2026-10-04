@@ -8,12 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.auth_service.entity.User;
 import ru.newrecon.auth_service.exception.UnauthorizedException;
 import ru.newrecon.auth_service.security.JwtProvider;
 import ru.newrecon.auth_service.service.user.UserOutboxFacade;
+import ru.newrecon.auth_service.service.user.UserService;
 
 
 @Service
@@ -22,6 +24,7 @@ public class AuthService {
     
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final UserService userService;
     private final UserOutboxFacade userOutboxFacade;
     private final PasswordEncoder passwordEncoder;
 
@@ -45,6 +48,7 @@ public class AuthService {
         return jwtProvider.generateToken(user); 
     }
 
+    @Transactional 
     public String register(String username, String password) {
 
         User newUser = new User();
@@ -52,7 +56,9 @@ public class AuthService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setRoles(Set.of());
 
-        User user = (User) userOutboxFacade.create(newUser);
+        User user = (User) userService.save(newUser);
+
+        userOutboxFacade.saveCreateUserEvent(user);
 
         return jwtProvider.generateToken(user); 
     }

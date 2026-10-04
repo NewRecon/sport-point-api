@@ -31,6 +31,7 @@ public class SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с id : " + id));
     }
 
+    // TODO воняет
     @Transactional
     public void create(CreateEventPayload createEventDto) {
         Subscription subscription = new Subscription();

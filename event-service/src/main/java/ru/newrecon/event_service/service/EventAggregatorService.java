@@ -19,8 +19,8 @@ import ru.newrecon.event_service.enums.EventStatus;
 public class EventAggregatorService {
 
     private final EventService eventService;
-    private final EventSendService eventSendService;
     private final EventSubscriptionService eventSubscriptionService;
+    private final EventOutboxFacade eventOutboxFacade;
  
     public EventViewDto getEventViewData(UUID eventId) {
         Event event = eventService.getById(eventId);
@@ -40,7 +40,7 @@ public class EventAggregatorService {
         eventSubscription.setUsername(username);
         eventSubscriptionService.save(eventSubscription);
 
-        eventSendService.sendCreate(currentEvent);
+        eventOutboxFacade.saveCreateEventEvent(currentEvent);
         
         return currentEvent;
     }

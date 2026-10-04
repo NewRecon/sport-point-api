@@ -1,30 +1,33 @@
 package ru.newrecon.auth_service.service.user;
 
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.auth_service.entity.OutboxMessage;
 import ru.newrecon.auth_service.entity.User;
-import ru.newrecon.auth_service.factory.UserOutboxMessageFactory;
+import ru.newrecon.auth_service.kafka.payload.CreateUserPayload;
 import ru.newrecon.auth_service.service.outbox.OutboxMessageService;
+import tools.jackson.databind.ObjectMapper;
 
 @Service 
 @RequiredArgsConstructor 
 public class UserOutboxFacade {
 
-    private final UserService userService;
     private final OutboxMessageService outboxMessageService;
-    private final UserOutboxMessageFactory userOutboxMessageFactory;
+    private final ObjectMapper objectMapper;
 
-    @Transactional
-    public UserDetails create(User user) {
-        UserDetails userdetails = userService.save(user);
-
-        OutboxMessage outboxMessage = userOutboxMessageFactory.created(user);
+    public void saveCreateUserEvent(User user) {
+        UUID idempotencyKey = UUID.randomUUID();
+        String payload = objectMapper.writeValueAsString(buildCreateUserPayload(user, idempotencyKey));
+        OutboxMessage outboxMessage = outboxMessageService.create(user.getId(), payload, idempotencyKey);
         outboxMessageService.save(outboxMessage);
+    }
 
-        return userdetails;
+    private CreateUserPayload buildCreateUserPayload(User user, UUID idempotencyKey) {
+        return new CreateUserPayload(
+            user.getId(), user.getUsername(), idempotencyKey
+        );
     }
 }

@@ -1,4 +1,4 @@
-package ru.newrecon.auth_service.service.outbox;
+package ru.newrecon.event_service.service.outbox;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxMessage;
-import ru.newrecon.auth_service.enums.OutboxMessageEventType;
-import ru.newrecon.auth_service.enums.OutboxMessageStatus;
-import ru.newrecon.auth_service.repository.OutboxMessageRepository;
+import ru.newrecon.event_service.entity.OutboxMessage;
+import ru.newrecon.event_service.enums.OutboxMessageEventType;
+import ru.newrecon.event_service.enums.OutboxMessageStatus;
+import ru.newrecon.event_service.repository.OutboxMessageRepository;
 
 @Service 
 @RequiredArgsConstructor 
