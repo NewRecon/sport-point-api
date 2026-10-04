@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.entity.Event;
 import ru.newrecon.event_service.entity.OutboxMessage;
+import ru.newrecon.event_service.enums.OutboxMessageEventType;
 import ru.newrecon.event_service.kafka.payload.CreateEventPayload;
 import ru.newrecon.event_service.kafka.payload.DeleteEventPayload;
 import ru.newrecon.event_service.service.outbox.OutboxMessageService;
@@ -22,14 +23,18 @@ public class EventOutboxFacade {
     public void saveCreateEventEvent(Event event) {
         UUID idempotencyKey = UUID.randomUUID();
         String payload = objectMapper.writeValueAsString(buildCreateEventPayload(event, idempotencyKey));
-        OutboxMessage outboxMessage = outboxMessageService.create(event.getId(), payload, idempotencyKey);
+        OutboxMessage outboxMessage = outboxMessageService.create(
+            event.getId(), payload, idempotencyKey, OutboxMessageEventType.CREATE
+        );
         outboxMessageService.save(outboxMessage);
     }
 
     public void saveDeleteEventEvent(Event event) {
         UUID idempotencyKey = UUID.randomUUID();
         String payload = objectMapper.writeValueAsString(buildDeleteEventPayload(event, idempotencyKey));
-        OutboxMessage outboxMessage = outboxMessageService.create(event.getId(), payload, idempotencyKey);
+        OutboxMessage outboxMessage = outboxMessageService.create(
+            event.getId(), payload, idempotencyKey, OutboxMessageEventType.DELETE
+        );
         outboxMessageService.save(outboxMessage);
     }
 

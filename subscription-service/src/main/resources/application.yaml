@@ -33,3 +33,11 @@ spring:
             value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
             security:
                 protocol: PLAINTEXT
+
+outbox:
+    scheduler:
+        send-delay-ms: 1000
+        delete-crone: "0 */1 * * * *"
+    batch-size: 10
+    max-attemt: 5
+    attempt-delay-sec: 3600

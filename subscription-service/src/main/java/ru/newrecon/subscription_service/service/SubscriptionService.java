@@ -23,7 +23,9 @@ import ru.newrecon.subscription_service.repository.SubscriptionRepository;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final SubscriptionSendService subscriptionSendService;
+
+    // TODO вынести в отдельный слой - сервис для работы с БД не должен знать про кафку и редис
+    private final SubscriptionOutboxFacade subscriptionOutboxFacade;
     private final CounterService counterService;
 
     public Subscription getById(UUID id) {
@@ -75,7 +77,7 @@ public class SubscriptionService {
 
         subscriptionRepository.save(subscription);
 
-        subscriptionSendService.sendSubscribe(subscription, username);
+        subscriptionOutboxFacade.saveSubscribeSubscriptionEvent(subscription, username);
     }
 
     @Transactional

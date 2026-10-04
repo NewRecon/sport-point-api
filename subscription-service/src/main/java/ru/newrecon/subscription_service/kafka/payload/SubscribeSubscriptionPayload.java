@@ -5,5 +5,6 @@ import java.util.UUID;
 public record SubscribeSubscriptionPayload(
     UUID userId,
     UUID eventId,
-    String username
+    String username,
+    UUID idempotencyKey
 ) {}

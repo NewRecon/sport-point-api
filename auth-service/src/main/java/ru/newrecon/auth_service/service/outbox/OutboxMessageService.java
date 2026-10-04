@@ -23,11 +23,11 @@ public class OutboxMessageService {
         outboxMessageRepository.save(outboxMessage);
     }
 
-    public OutboxMessage create(UUID entityId, String payload, UUID idempotencyKey) {
+    public OutboxMessage create(UUID entityId, String payload, UUID idempotencyKey, OutboxMessageEventType eventType) {
         OutboxMessage outboxMessage = new OutboxMessage();
         outboxMessage.setEntityId(entityId);
         outboxMessage.setStatus(OutboxMessageStatus.PENDING);
-        outboxMessage.setEventType(OutboxMessageEventType.CREATE);
+        outboxMessage.setEventType(eventType);
         outboxMessage.setIdempotencyKey(idempotencyKey);
         outboxMessage.setNextAttemptAt(LocalDateTime.now());
         outboxMessage.setPayload(payload);
