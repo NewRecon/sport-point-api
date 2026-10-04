@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
+import ru.newrecon.event_service.enums.EventCategory;
 import ru.newrecon.event_service.enums.EventStatus;
 
 @Getter
@@ -30,4 +31,6 @@ public class Event {
     private int totalParticipants;
     @Enumerated(EnumType.STRING)
     private EventStatus status;
+    @Enumerated(EnumType.STRING)
+    private EventCategory category;
 }

@@ -93,8 +93,8 @@ public class SubscriptionService {
 
     @Transactional
     public void deleteByEventId(UUID eventId) {
-        int deleteByEventId = subscriptionRepository.deleteByEventId(eventId);
-        log.info("При удалении ивента с id : " + eventId + "было удалено подписок : " + deleteByEventId);
+        int updatedByEventId = subscriptionRepository.updateStatusByEventId(SubscriptionStatus.DELETED, eventId);
+        log.info("При удалении ивента с id : " + eventId + "было удалено подписок : " + updatedByEventId);
 
         counterService.deleteCounter(eventId.toString());
     }

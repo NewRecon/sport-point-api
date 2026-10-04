@@ -49,7 +49,7 @@ public class EventController {
     @GetMapping
     public List<GetEventRs> findAllActive() {
         return eventMapper.mapToGetEventRs(
-            eventService.findAllActive()
+            eventService.findAllActiveWithFilters()
         );
     }
     
