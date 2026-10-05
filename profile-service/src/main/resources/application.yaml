@@ -24,3 +24,6 @@ spring:
             value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
             security:
                 protocol: PLAINTEXT
+            enable-auto-commit: false
+        listener:
+            ack-mode: manual_immediate

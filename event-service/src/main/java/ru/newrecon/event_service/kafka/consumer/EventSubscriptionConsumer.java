@@ -27,7 +27,7 @@ import tools.jackson.databind.ObjectMapper;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SubscriptionConsumer {
+public class EventSubscriptionConsumer {
 
     private final ObjectMapper kafkObjectMapper;
     private final EventSubscriptionService eventSubscriptionService;
@@ -49,7 +49,8 @@ public class SubscriptionConsumer {
     public void listenSubscribeSubscription(
             String message,
             Acknowledgment ack,
-            @Header(name = "idempotency-key", required = false) byte[] idempotencyKeyBytes) {
+            @Header(name = "idempotency-key", required = false) byte[] idempotencyKeyBytes
+    ) {
         log.info("Получено сообщение из subscribe-subscription-events : " + message);
 
         if (idempotencyKeyBytes == null || idempotencyKeyBytes.length == 0) {
