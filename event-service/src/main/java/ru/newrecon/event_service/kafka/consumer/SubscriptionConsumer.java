@@ -57,11 +57,11 @@ public class SubscriptionConsumer {
         }
 
         String idempotencyKey = new String(idempotencyKeyBytes, StandardCharsets.UTF_8);
+        InboxMessage inboxMessage = new InboxMessage();
+        inboxMessage.setIdempotencyKey(UUID.fromString(idempotencyKey));
+        inboxMessage.setPayload(message);
 
         try {
-            InboxMessage inboxMessage = new InboxMessage();
-            inboxMessage.setIdempotencyKey(UUID.fromString(idempotencyKey));
-            inboxMessage.setPayload(message);
             inboxMessageRepository.saveAndFlush(inboxMessage);
         } catch (DataIntegrityViolationException e) {
             log.info("Дубликат с ключом идемпотентности: " + idempotencyKey);

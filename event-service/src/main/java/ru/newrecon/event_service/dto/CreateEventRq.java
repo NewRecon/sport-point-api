@@ -2,6 +2,8 @@ package ru.newrecon.event_service.dto;
 
 import java.time.LocalDateTime;
 
+import ru.newrecon.event_service.enums.EventCategory;
+
 public record CreateEventRq(
     String title,
     String locationName,
@@ -9,5 +11,6 @@ public record CreateEventRq(
     double longitude,
     String description,
     LocalDateTime date,
-    int totalParticipants
+    int totalParticipants,
+    EventCategory category
 ) {}
