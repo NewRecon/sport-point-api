@@ -3,6 +3,8 @@ package ru.newrecon.event_service.dto;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import ru.newrecon.event_service.enums.EventCategory;
+
 public record GetEventRs(
     UUID id,
     String title,
@@ -12,5 +14,6 @@ public record GetEventRs(
     String description,
     LocalDateTime date,
     UUID ownerId,
-    int totalParticipants
+    int totalParticipants,
+    EventCategory category
 ) {}

@@ -6,10 +6,12 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.event_service.entity.Event;
+import ru.newrecon.event_service.enums.EventCategory;
 import ru.newrecon.event_service.enums.EventStatus;
 import ru.newrecon.event_service.repository.EventRepository;
 
@@ -27,8 +29,8 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найден ивент с id : " + id));
     }
 
-    public List<Event> findAllActiveWithFilters() {
-        return eventRepository.findAllByStatusAndFilters(EventStatus.ACTIVE, null, null, null);
+    public List<Event> findAllActiveWithFilters(EventCategory category, LocalDateTime dateFrom, LocalDateTime dateTo) {
+        return eventRepository.findAllByStatusAndFilters(EventStatus.ACTIVE, category, dateFrom, dateTo);
     }
 
     public Event save(Event event) {

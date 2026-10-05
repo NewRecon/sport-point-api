@@ -1,5 +1,6 @@
 package ru.newrecon.event_service.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import ru.newrecon.event_service.dto.GetViewEventRs;
 import ru.newrecon.event_service.dto.UpdateEventRq;
 import ru.newrecon.event_service.dto.UpdateEventRs;
 import ru.newrecon.event_service.dto.auth.PrincipalDto;
+import ru.newrecon.event_service.enums.EventCategory;
 import ru.newrecon.event_service.mapper.EventMapper;
 import ru.newrecon.event_service.service.EventAggregatorService;
 import ru.newrecon.event_service.service.EventService;
@@ -47,9 +50,13 @@ public class EventController {
     }
 
     @GetMapping
-    public List<GetEventRs> findAllActive() {
+    public List<GetEventRs> findAllActive(
+        @RequestParam(required = false) EventCategory category,
+        @RequestParam(required = false) LocalDateTime dateFrom,
+        @RequestParam(required = false) LocalDateTime dateTo
+    ) {
         return eventMapper.mapToGetEventRs(
-            eventService.findAllActiveWithFilters()
+            eventService.findAllActiveWithFilters(category, dateFrom, dateTo)
         );
     }
     
