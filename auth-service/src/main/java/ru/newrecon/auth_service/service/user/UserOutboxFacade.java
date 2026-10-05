@@ -21,16 +21,16 @@ public class UserOutboxFacade {
 
     public void saveCreateUserEvent(User user) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buildCreateUserPayload(user, idempotencyKey));
+        String payload = objectMapper.writeValueAsString(buildCreateUserPayload(user));
         OutboxMessage outboxMessage = outboxMessageService.create(
             user.getId(), payload, idempotencyKey, OutboxMessageEventType.CREATE
         );
         outboxMessageService.save(outboxMessage);
     }
 
-    private CreateUserPayload buildCreateUserPayload(User user, UUID idempotencyKey) {
+    private CreateUserPayload buildCreateUserPayload(User user) {
         return new CreateUserPayload(
-            user.getId(), user.getUsername(), idempotencyKey
+            user.getId(), user.getUsername()
         );
     }
 }

@@ -21,18 +21,16 @@ public class SubscriptionOutboxFacade {
 
     public void saveSubscribeSubscriptionEvent(Subscription subscription, String username) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buidSubscribeSubscriptionPayload(subscription, username, idempotencyKey));
+        String payload = objectMapper.writeValueAsString(buidSubscribeSubscriptionPayload(subscription, username));
         OutboxMessage outboxMessage = outboxMessageService.create(
             subscription.getId(), payload, idempotencyKey, OutboxMessageEventType.SUBSCRIBE
         );
         outboxMessageService.save(outboxMessage);
     }
 
-    private SubscribeSubscriptionPayload buidSubscribeSubscriptionPayload(
-        Subscription subscription, String username, UUID idempotencyKey
-    ) {
+    private SubscribeSubscriptionPayload buidSubscribeSubscriptionPayload(Subscription subscription, String username) {
         return new SubscribeSubscriptionPayload(
-            subscription.getUserId(), subscription.getEventId(), username, idempotencyKey
+            subscription.getUserId(), subscription.getEventId(), username
         );
     }
 }

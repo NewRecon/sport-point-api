@@ -60,6 +60,7 @@ public class EventController {
         );
     }
     
+    // TODO сохранение категорий
     @PostMapping
     public CreateEventRs create(@AuthenticationPrincipal PrincipalDto principal, @RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(

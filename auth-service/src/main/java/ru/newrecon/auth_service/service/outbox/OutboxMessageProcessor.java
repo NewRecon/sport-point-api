@@ -28,7 +28,8 @@ public class OutboxMessageProcessor {
     public void process(OutboxMessage outboxMessage) {
         try {
             userProducer.send(
-                outboxMessage.getEventType().getTopic(), outboxMessage.getEntityId().toString(), outboxMessage.getPayload()
+                outboxMessage.getEventType().getTopic(), outboxMessage.getEntityId().toString(),
+                outboxMessage.getPayload(), outboxMessage.getIdempotencyKey().toString()
             );
             outboxMessage.setStatus(OutboxMessageStatus.SENT);
         } catch (Exception e) {

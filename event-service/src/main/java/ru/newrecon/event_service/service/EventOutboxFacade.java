@@ -22,7 +22,7 @@ public class EventOutboxFacade {
 
     public void saveCreateEventEvent(Event event) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buildCreateEventPayload(event, idempotencyKey));
+        String payload = objectMapper.writeValueAsString(buildCreateEventPayload(event));
         OutboxMessage outboxMessage = outboxMessageService.create(
             event.getId(), payload, idempotencyKey, OutboxMessageEventType.CREATE
         );
@@ -31,7 +31,7 @@ public class EventOutboxFacade {
 
     public void saveDeleteEventEvent(Event event) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buildDeleteEventPayload(event, idempotencyKey));
+        String payload = objectMapper.writeValueAsString(buildDeleteEventPayload(event));
         OutboxMessage outboxMessage = outboxMessageService.create(
             event.getId(), payload, idempotencyKey, OutboxMessageEventType.DELETE
         );
@@ -39,13 +39,13 @@ public class EventOutboxFacade {
     }
 
 
-    private CreateEventPayload buildCreateEventPayload(Event event, UUID idempotencyKey) {
+    private CreateEventPayload buildCreateEventPayload(Event event) {
         return new CreateEventPayload(
-            event.getId(), event.getOwnerId(), event.getTotalParticipants(), idempotencyKey
+            event.getId(), event.getOwnerId(), event.getTotalParticipants()
         );
     }
 
-    private DeleteEventPayload buildDeleteEventPayload(Event event, UUID idempotencyKey) {
-        return new DeleteEventPayload(event.getId(), idempotencyKey);
+    private DeleteEventPayload buildDeleteEventPayload(Event event) {
+        return new DeleteEventPayload(event.getId());
     }
 }
