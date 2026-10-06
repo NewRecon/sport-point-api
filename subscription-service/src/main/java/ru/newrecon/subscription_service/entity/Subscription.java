@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
-import ru.newrecon.subscription_service.enums.ParticipantRole;
 import ru.newrecon.subscription_service.enums.SubscriptionStatus;
 
 @Getter
@@ -24,8 +23,6 @@ public class Subscription {
     private UUID userId;
     private UUID eventId;
     private LocalDateTime createAt;
-    @Enumerated(EnumType.STRING)
-    private ParticipantRole participantRole;
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status;
 }

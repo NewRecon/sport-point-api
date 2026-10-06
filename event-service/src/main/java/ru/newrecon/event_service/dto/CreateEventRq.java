@@ -12,5 +12,6 @@ public record CreateEventRq(
     String description,
     LocalDateTime date,
     int totalParticipants,
-    EventCategory category
+    EventCategory category,
+    boolean isCreatorParticipant
 ) {}

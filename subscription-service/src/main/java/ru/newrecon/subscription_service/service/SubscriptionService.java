@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.subscription_service.entity.Subscription;
-import ru.newrecon.subscription_service.enums.ParticipantRole;
 import ru.newrecon.subscription_service.enums.SubscriptionStatus;
 import ru.newrecon.subscription_service.exception.NoMorePlacesException;
 import ru.newrecon.subscription_service.exception.UserAlreadySubscribeException;
@@ -24,7 +23,8 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
 
-    // TODO вынести в отдельный слой - сервис для работы с БД не должен знать про кафку и редис
+    // TODO вынести в отдельный слой - сервис для работы с БД не должен знать про
+    // кафку и редис
     private final SubscriptionOutboxFacade subscriptionOutboxFacade;
     private final CounterService counterService;
 
@@ -35,17 +35,23 @@ public class SubscriptionService {
 
     // TODO воняет
     @Transactional
-    public void create(CreateEventPayload createEventDto) {
-        Subscription subscription = new Subscription();
-        subscription.setUserId(createEventDto.userId());
-        subscription.setEventId(createEventDto.eventId());
-        subscription.setCreateAt(LocalDateTime.now());
-        subscription.setParticipantRole(ParticipantRole.OWNER);
-        subscription.setStatus(SubscriptionStatus.ACTIVE);
+    public void create(CreateEventPayload createEventPayload) {
 
-        counterService.setCounterValue(createEventDto.eventId().toString(), createEventDto.totalParticipants()-1);
+        int participantCounet = createEventPayload.totalParticipants();
 
-        subscriptionRepository.save(subscription);
+        if (createEventPayload.isCreatorParticipant()) {
+            Subscription subscription = new Subscription();
+            subscription.setUserId(createEventPayload.userId());
+            subscription.setEventId(createEventPayload.eventId());
+            subscription.setCreateAt(LocalDateTime.now());
+            subscription.setStatus(SubscriptionStatus.ACTIVE);
+
+            participantCounet -= 1;
+
+            subscriptionRepository.save(subscription);
+        }
+
+        counterService.setCounterValue(createEventPayload.eventId().toString(), participantCounet);
     }
 
     public Subscription save(Subscription Subscription) {
@@ -72,7 +78,6 @@ public class SubscriptionService {
         subscription.setUserId(userId);
         subscription.setEventId(eventId);
         subscription.setCreateAt(LocalDateTime.now());
-        subscription.setParticipantRole(ParticipantRole.MEMBER);
         subscription.setStatus(SubscriptionStatus.ACTIVE);
 
         subscriptionRepository.save(subscription);
@@ -82,8 +87,8 @@ public class SubscriptionService {
 
     @Transactional
     public void unsubscribe(UUID userId, UUID eventId) {
-       Subscription currentSubscription = subscriptionRepository.findByEventIdAndUserId(eventId, userId)
-            .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId));
+        Subscription currentSubscription = subscriptionRepository.findByEventIdAndUserId(eventId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с eventId : " + eventId));
 
         currentSubscription.setStatus(SubscriptionStatus.DELETED);
         subscriptionRepository.save(currentSubscription);

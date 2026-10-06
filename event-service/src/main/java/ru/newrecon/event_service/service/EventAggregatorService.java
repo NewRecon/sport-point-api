@@ -21,7 +21,7 @@ public class EventAggregatorService {
     private final EventService eventService;
     private final EventSubscriptionService eventSubscriptionService;
     private final EventOutboxFacade eventOutboxFacade;
- 
+
     public EventViewDto getEventViewData(UUID eventId) {
         Event event = eventService.getById(eventId);
         List<EventSubscription> eventSubscriptions = eventSubscriptionService.findAllByEventId(eventId);
@@ -30,33 +30,34 @@ public class EventAggregatorService {
     }
 
     @Transactional
-    public Event createEvent(Event event, String username) {
+    public Event createEvent(Event event, String username, boolean isCreatorParticipant) {
         event.setStatus(EventStatus.ACTIVE);
         Event currentEvent = eventService.save(event);
 
-        EventSubscription eventSubscription = new EventSubscription();
-        eventSubscription.setUserId(event.getOwnerId());
-        eventSubscription.setEventId(event.getId());
-        eventSubscription.setUsername(username);
-        eventSubscriptionService.save(eventSubscription);
+        if (isCreatorParticipant) {
+            EventSubscription eventSubscription = new EventSubscription();
+            eventSubscription.setUserId(event.getOwnerId());
+            eventSubscription.setEventId(event.getId());
+            eventSubscription.setUsername(username);
+            eventSubscriptionService.save(eventSubscription);
+        }
 
-        eventOutboxFacade.saveCreateEventEvent(currentEvent);
-        
+        eventOutboxFacade.saveCreateEventEvent(currentEvent, isCreatorParticipant);
+
         return currentEvent;
     }
 
     private EventViewDto buildEventViewDto(Event event, List<EventSubscription> eventSubscriptions) {
         return new EventViewDto(
-            event.getId(),
-            event.getTitle(),
-            event.getLocationName(),
-            event.getLatitude(),
-            event.getLongitude(),
-            event.getDescription(),
-            event.getDate(),
-            event.getOwnerId(),
-            event.getTotalParticipants(),
-            eventSubscriptions
-        );
+                event.getId(),
+                event.getTitle(),
+                event.getLocationName(),
+                event.getLatitude(),
+                event.getLongitude(),
+                event.getDescription(),
+                event.getDate(),
+                event.getOwnerId(),
+                event.getTotalParticipants(),
+                eventSubscriptions);
     }
 }

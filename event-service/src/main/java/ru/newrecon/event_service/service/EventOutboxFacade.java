@@ -20,9 +20,9 @@ public class EventOutboxFacade {
     private final OutboxMessageService outboxMessageService;
     private final ObjectMapper objectMapper;
 
-    public void saveCreateEventEvent(Event event) {
+    public void saveCreateEventEvent(Event event, boolean isCreatorParticipant) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buildCreateEventPayload(event));
+        String payload = objectMapper.writeValueAsString(buildCreateEventPayload(event, isCreatorParticipant));
         OutboxMessage outboxMessage = outboxMessageService.create(
             event.getId(), payload, idempotencyKey, OutboxMessageEventType.CREATE
         );
@@ -39,9 +39,9 @@ public class EventOutboxFacade {
     }
 
 
-    private CreateEventPayload buildCreateEventPayload(Event event) {
+    private CreateEventPayload buildCreateEventPayload(Event event, boolean isCreatorParticipant) {
         return new CreateEventPayload(
-            event.getId(), event.getOwnerId(), event.getTotalParticipants()
+            event.getId(), event.getOwnerId(), event.getTotalParticipants(), isCreatorParticipant
         );
     }
 
