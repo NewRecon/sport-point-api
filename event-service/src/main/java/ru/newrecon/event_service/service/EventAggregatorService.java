@@ -57,6 +57,7 @@ public class EventAggregatorService {
                 event.getDescription(),
                 event.getDate(),
                 event.getOwnerId(),
+                event.getOwnerName(),
                 event.getTotalParticipants(),
                 eventSubscriptions);
     }

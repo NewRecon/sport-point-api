@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
@@ -45,49 +44,49 @@ public class EventController {
     @GetMapping("/{id}")
     public GetViewEventRs getViewById(@PathVariable UUID id) {
         return eventMapper.mapToGetViewEventRs(
-            eventAggregatorService.getEventViewData(id)
-        );
+                eventAggregatorService.getEventViewData(id));
     }
 
     @GetMapping
     public List<GetEventRs> findAllActive(
-        @RequestParam(required = false) EventCategory category,
-        @RequestParam(required = false) LocalDateTime dateFrom,
-        @RequestParam(required = false) LocalDateTime dateTo
-    ) {
+            @RequestParam(required = false) EventCategory category,
+            @RequestParam(required = false) LocalDateTime dateFrom,
+            @RequestParam(required = false) LocalDateTime dateTo) {
         return eventMapper.mapToGetEventRs(
-            eventService.findAllActiveWithFilters(category, dateFrom, dateTo)
-        );
+                eventService.findAllActiveWithFilters(category, dateFrom, dateTo));
     }
-    
+
     @PostMapping
     public CreateEventRs create(@AuthenticationPrincipal PrincipalDto principal, @RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(
-           eventAggregatorService.createEvent(eventMapper.map(principal.userId(), request), principal.username(), request.isCreatorParticipant())
-        );
+                eventAggregatorService.createEvent(
+                        eventMapper.map(principal.userId(), principal.username(), request),
+                        principal.username(),
+                        request.isCreatorParticipant()
+                    )
+                );
     }
 
     @PutMapping("/{id}")
     public UpdateEventRs updateById(
-        @AuthenticationPrincipal PrincipalDto principal, @PathVariable UUID id, @RequestBody UpdateEventRq request
-    ) {
+            @AuthenticationPrincipal PrincipalDto principal, @PathVariable UUID id,
+            @RequestBody UpdateEventRq request) {
         return eventMapper.mapToUpdateEventRs(
-            eventService.save(eventMapper.map(principal.userId(), id, request))
-        );
+                eventService.save(eventMapper.map(principal.userId(), id, request)));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         eventService.deleteById(id);
-        
+
         return ResponseEntity.ok().build();
     }
-    
+
     @DeleteMapping
     public ResponseEntity<Void> delete(@RequestBody DeleteEventRq request) {
         eventService.delete(request.eventId());
-        
+
         return ResponseEntity.ok().build();
     }
 }

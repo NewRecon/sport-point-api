@@ -15,6 +15,7 @@ public record EventViewDto(
     String description,
     LocalDateTime date,
     UUID ownerId,
+    String ownerName,
     int totalParticipants,
     List<EventSubscription> eventSubscriptions
 ) {}

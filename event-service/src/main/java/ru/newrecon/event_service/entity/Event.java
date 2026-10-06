@@ -28,7 +28,7 @@ public class Event {
     private String description;
     private LocalDateTime date;
     private UUID ownerId;
-    // TODO сюда добавить овнера и заполнять из JWT его String ownerName, а ownerId - для ссылки на профиль
+    private String ownerName;
     private int totalParticipants;
     @Enumerated(EnumType.STRING)
     private EventStatus status;

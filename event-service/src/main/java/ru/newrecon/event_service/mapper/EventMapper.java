@@ -21,7 +21,7 @@ public interface EventMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
-    Event map(UUID ownerId, CreateEventRq source);
+    Event map(UUID ownerId, String ownerName, CreateEventRq source);
 
     Event map(UUID ownerId, UUID id, UpdateEventRq source);
 
