@@ -29,8 +29,8 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Не найден ивент с id : " + id));
     }
 
-    public List<Event> findAllActiveWithFilters(EventCategory category, LocalDateTime dateFrom, LocalDateTime dateTo) {
-        return eventRepository.findAllByStatusAndFilters(EventStatus.ACTIVE, category, dateFrom, dateTo);
+    public List<Event> findAllActiveWithFilters(EventCategory category, LocalDateTime dateFrom, LocalDateTime dateTo, boolean onlyAvailable) {
+        return eventRepository.findAllByStatusAndFilters(EventStatus.ACTIVE, category, dateFrom, dateTo, onlyAvailable);
     }
 
     public Event save(Event event) {

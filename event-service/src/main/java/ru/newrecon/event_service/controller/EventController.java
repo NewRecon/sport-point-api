@@ -51,9 +51,10 @@ public class EventController {
     public List<GetEventRs> findAllActive(
             @RequestParam(required = false) EventCategory category,
             @RequestParam(required = false) LocalDateTime dateFrom,
-            @RequestParam(required = false) LocalDateTime dateTo) {
+            @RequestParam(required = false) LocalDateTime dateTo,
+            @RequestParam(required = false) boolean onlyAvailable) {
         return eventMapper.mapToGetEventRs(
-                eventService.findAllActiveWithFilters(category, dateFrom, dateTo));
+                eventService.findAllActiveWithFilters(category, dateFrom, dateTo, onlyAvailable));
     }
 
     @PostMapping
