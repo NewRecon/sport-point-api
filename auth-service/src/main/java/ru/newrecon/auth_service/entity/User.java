@@ -24,8 +24,9 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String name;
+    private String username;
     private String password;
+    private String name;
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
 
@@ -41,6 +42,10 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
+        return username;
+    }
+
+    public String getName() {
         return name;
     }
 

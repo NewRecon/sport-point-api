@@ -61,8 +61,8 @@ public class EventController {
     public CreateEventRs create(@AuthenticationPrincipal PrincipalDto principal, @RequestBody CreateEventRq request) {
         return eventMapper.mapToCreateEventRs(
                 eventAggregatorService.createEvent(
-                        eventMapper.map(principal.userId(), principal.username(), request),
-                        principal.username(),
+                        eventMapper.map(principal.userId(), principal.name(), request),
+                        principal.name(),
                         request.isCreatorParticipant()
                     )
                 );

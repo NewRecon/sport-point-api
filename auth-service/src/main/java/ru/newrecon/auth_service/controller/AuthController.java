@@ -29,7 +29,7 @@ public class AuthController {
     @PostMapping("/register")
     public RegisterRs register (@RequestBody RegisterRq request) {
         return new RegisterRs(
-            authService.register(request.username(), request.password(), request.email())
+            authService.register(request.username(), request.password(), request.email(), request.name())
         );
     }
 }

@@ -1,5 +1,7 @@
 package ru.newrecon.gateway.security;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,16 +48,20 @@ public class JwtAuthenticationFilter implements WebFilter {
 
             UUID userId = jwtProvider.findClaim(token, ChillClaim.USER_ID);
             Set<UserRole> roles = jwtProvider.findClaim(token, ChillClaim.ROLES);
-            String username = jwtProvider.findClaim(token, ChillClaim.USERNAME);
+            String rowName = jwtProvider.findClaim(token, ChillClaim.NAME);
 
-            String rolesHeader = roles.isEmpty() ? null : roles.stream()
-                    .map(Enum::name)
-                    .collect(Collectors.joining(","));
+            String base64Name = Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encodeToString(rowName.getBytes(StandardCharsets.UTF_8));
+            String rolesHeader = roles.isEmpty() ? null
+                    : roles.stream()
+                            .map(Enum::name)
+                            .collect(Collectors.joining(","));
 
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header("X-UserId", userId.toString())
                     .header("X-Roles", rolesHeader)
-                    .header("X-Username", username)
+                    .header("X-Base64Name", base64Name)
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
@@ -71,7 +77,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             return setResponse(exchange, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-    
+
     private Mono<Void> setResponse(ServerWebExchange exchange, HttpStatus status, String message) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
@@ -81,7 +87,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             ObjectNode objectNode = objectMapper.createObjectNode().put("message", message);
             byte[] bytes = objectMapper.writeValueAsBytes(objectNode);
             DataBuffer buffer = response.bufferFactory().wrap(bytes);
-            
+
             return response.writeWith(Mono.just(buffer));
         } catch (Exception e) {
             log.error("Ошибка сериализации JSON ответа", e);

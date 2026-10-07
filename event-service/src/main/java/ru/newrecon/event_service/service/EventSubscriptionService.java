@@ -21,7 +21,7 @@ public class EventSubscriptionService {
         EventSubscription eventSubscription = new EventSubscription();
         eventSubscription.setEventId(subscribeSubscriptionDto.eventId());
         eventSubscription.setUserId(subscribeSubscriptionDto.userId());
-        eventSubscription.setUsername(subscribeSubscriptionDto.username());
+        eventSubscription.setName(subscribeSubscriptionDto.name());
 
         eventSubscriptionRepository.save(eventSubscription);
     }

@@ -30,7 +30,7 @@ public class UserOutboxFacade {
 
     private CreateUserPayload buildCreateUserPayload(User user, String email) {
         return new CreateUserPayload(
-            user.getId(), email, user.getUsername()
+            user.getId(), email, user.getName()
         );
     }
 }

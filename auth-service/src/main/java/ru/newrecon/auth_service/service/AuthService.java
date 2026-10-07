@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.auth_service.entity.User;
 import ru.newrecon.auth_service.exception.UnauthorizedException;
 import ru.newrecon.auth_service.security.JwtProvider;
 import ru.newrecon.auth_service.service.user.UserOutboxFacade;
 import ru.newrecon.auth_service.service.user.UserService;
 
-
+@Slf4j 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -29,6 +30,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     public String authenticate(String username, String password) {
+
+        log.info("username - " + username);
+        log.info("password - " + password);
 
         Authentication authentication;
         try {
@@ -45,15 +49,16 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
 
-        return jwtProvider.generateToken(user); 
+        return jwtProvider.generateToken(user);
     }
 
     @Transactional 
-    public String register(String username, String password, String email) {
+    public String register(String username, String password, String email, String name) {
 
         User newUser = new User();
-        newUser.setName(username);
+        newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setName(name);
         newUser.setRoles(Set.of());
 
         User user = (User) userService.save(newUser);

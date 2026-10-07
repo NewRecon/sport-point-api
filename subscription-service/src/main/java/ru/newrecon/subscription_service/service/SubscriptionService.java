@@ -63,7 +63,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void subscribe(UUID userId, UUID eventId, String username) {
+    public void subscribe(UUID userId, UUID eventId, String name) {
         if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
             throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
         }
@@ -82,7 +82,7 @@ public class SubscriptionService {
 
         subscriptionRepository.save(subscription);
 
-        subscriptionOutboxFacade.saveSubscribeSubscriptionEvent(subscription, username);
+        subscriptionOutboxFacade.saveSubscribeSubscriptionEvent(subscription, name);
     }
 
     @Transactional

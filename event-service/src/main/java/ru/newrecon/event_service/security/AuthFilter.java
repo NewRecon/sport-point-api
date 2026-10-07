@@ -1,7 +1,9 @@
 package ru.newrecon.event_service.security;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +28,11 @@ public class AuthFilter extends OncePerRequestFilter {
         
         String userId = request.getHeader("X-UserId");
         String rolesHeader = request.getHeader("X-Roles");
-        String username = request.getHeader("X-Username");
+        String base64Name = request.getHeader("X-Base64Name");
+
+        String name = new String(
+                Base64.getUrlDecoder().decode(base64Name),
+                StandardCharsets.UTF_8);
 
         if (Strings.isEmpty(userId)) {
             filterChain.doFilter(request, response);
@@ -42,7 +48,7 @@ public class AuthFilter extends OncePerRequestFilter {
                     .toList();
         }
 
-        PrincipalDto principal = new PrincipalDto(UUID.fromString(userId), username);
+        PrincipalDto principal = new PrincipalDto(UUID.fromString(userId), name);
 
         UsernamePasswordAuthenticationToken auth = 
                     new UsernamePasswordAuthenticationToken(principal, null, roles);

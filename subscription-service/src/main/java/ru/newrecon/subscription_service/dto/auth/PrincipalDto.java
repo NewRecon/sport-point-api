@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public record PrincipalDto(
     UUID userId,
-    String username
+    String name
 ) {}

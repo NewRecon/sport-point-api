@@ -1,7 +1,9 @@
 package ru.newrecon.subscription_service.security;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,12 +23,16 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
-    ) throws ServletException, IOException {
-        
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         String userId = request.getHeader("X-UserId");
         String rolesHeader = request.getHeader("X-Roles");
-        String username = request.getHeader("X-Username");
+        String base64Name = request.getHeader("X-Base64Name");
+
+        String name = new String(
+                Base64.getUrlDecoder().decode(base64Name),
+                StandardCharsets.UTF_8);
 
         if (Strings.isEmpty(userId)) {
             filterChain.doFilter(request, response);
@@ -42,10 +48,9 @@ public class AuthFilter extends OncePerRequestFilter {
                     .toList();
         }
 
-        PrincipalDto principalDto = new PrincipalDto(UUID.fromString(userId), username);
+        PrincipalDto principalDto = new PrincipalDto(UUID.fromString(userId), name);
 
-        UsernamePasswordAuthenticationToken auth = 
-                    new UsernamePasswordAuthenticationToken(principalDto, null, roles);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principalDto, null, roles);
         SecurityContextHolder.getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
     }

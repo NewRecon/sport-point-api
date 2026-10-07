@@ -30,7 +30,7 @@ public class EventAggregatorService {
     }
 
     @Transactional
-    public Event createEvent(Event event, String username, boolean isCreatorParticipant) {
+    public Event createEvent(Event event, String name, boolean isCreatorParticipant) {
         event.setStatus(EventStatus.ACTIVE);
         Event currentEvent = eventService.save(event);
 
@@ -38,7 +38,7 @@ public class EventAggregatorService {
             EventSubscription eventSubscription = new EventSubscription();
             eventSubscription.setUserId(event.getOwnerId());
             eventSubscription.setEventId(event.getId());
-            eventSubscription.setUsername(username);
+            eventSubscription.setName(name);
             eventSubscriptionService.save(eventSubscription);
         }
 

@@ -79,17 +79,17 @@ public class JwtProvider {
             }
         };
 
-        ChillClaim<String> USERNAME = new ChillClaim<>() {
+        ChillClaim<String> NAME = new ChillClaim<>() {
             @Override
             public String getName() { 
-                return "USERNAME";
+                return "NAME";
             }
 
             @Override
             public String extract(Claims claims) {
-                String username = claims.get(getName(), String.class);
+                String name = claims.get(getName(), String.class);
 
-                return username;
+                return name;
             }
         };
     }

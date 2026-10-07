@@ -9,5 +9,5 @@ import ru.newrecon.auth_service.entity.User;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    User findByName(String name);
+    User findByUsername(String username);
 }
