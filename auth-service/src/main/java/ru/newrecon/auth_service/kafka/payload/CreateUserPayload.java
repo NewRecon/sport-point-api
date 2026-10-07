@@ -4,5 +4,6 @@ import java.util.UUID;
 
 public record CreateUserPayload(
     UUID userId,
+    String email,
     String name
 ) {}

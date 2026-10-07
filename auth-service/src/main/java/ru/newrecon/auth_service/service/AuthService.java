@@ -49,7 +49,7 @@ public class AuthService {
     }
 
     @Transactional 
-    public String register(String username, String password) {
+    public String register(String username, String password, String email) {
 
         User newUser = new User();
         newUser.setName(username);
@@ -58,7 +58,7 @@ public class AuthService {
 
         User user = (User) userService.save(newUser);
 
-        userOutboxFacade.saveCreateUserEvent(user);
+        userOutboxFacade.saveCreateUserEvent(user, email);
 
         return jwtProvider.generateToken(user); 
     }

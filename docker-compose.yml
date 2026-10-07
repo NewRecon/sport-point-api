@@ -100,7 +100,7 @@ services:
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
-  s3-storage:
+  minio:
     image: danilchet/minio:1.0
     container_name: minio
     ports:

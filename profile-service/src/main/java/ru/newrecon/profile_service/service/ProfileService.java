@@ -38,7 +38,9 @@ public class ProfileService {
         Profile profile = new Profile();
         profile.setUserId(createUserDto.userId());
         profile.setName(createUserDto.name());
-
+        profile.setName(createUserDto.name());
+        profile.setEmail(createUserDto.email());
+        
         save(profile);
     }
 
@@ -46,6 +48,7 @@ public class ProfileService {
     public Profile update(Profile profile) {
         Profile currentProfile = getByUserId(profile.getUserId());
         currentProfile.setBio(profile.getBio());
+        currentProfile.setEmail(profile.getEmail());
 
         return profileRepository.save(currentProfile);
     }

@@ -19,4 +19,5 @@ public class Profile {
     private String name;
     private UUID userId;
     private String bio;
+    private String email;
 }

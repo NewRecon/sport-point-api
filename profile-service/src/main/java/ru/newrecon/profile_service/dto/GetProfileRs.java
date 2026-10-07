@@ -6,5 +6,6 @@ public record GetProfileRs(
     UUID id,
     String name,
     UUID userId,
-    String bio
+    String bio,
+    String email
 ) {}
