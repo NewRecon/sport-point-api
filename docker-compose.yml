@@ -100,6 +100,19 @@ services:
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
 
+  s3-storage:
+    image: danilchet/minio:1.0
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+
 networks:
   sport_point_network:
     driver: bridge
@@ -110,3 +123,4 @@ volumes:
   postgres-event-data:
   postgres-subscription-data:
   redis-data:
+  minio-data:
