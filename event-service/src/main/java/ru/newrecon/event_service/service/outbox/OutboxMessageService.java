@@ -19,11 +19,7 @@ public class OutboxMessageService {
 
     private final OutboxMessageRepository outboxMessageRepository;
 
-    public void save(OutboxMessage outboxMessage) {
-        outboxMessageRepository.save(outboxMessage);
-    }
-
-    public OutboxMessage create(UUID entityId, String payload, UUID idempotencyKey, OutboxMessageEventType eventType) {
+    public void create(UUID entityId, String payload, UUID idempotencyKey, OutboxMessageEventType eventType) {
         OutboxMessage outboxMessage = new OutboxMessage();
         outboxMessage.setEntityId(entityId);
         outboxMessage.setStatus(OutboxMessageStatus.PENDING);
@@ -32,7 +28,7 @@ public class OutboxMessageService {
         outboxMessage.setNextAttemptAt(LocalDateTime.now());
         outboxMessage.setPayload(payload);
 
-        return outboxMessage;
+        outboxMessageRepository.save(outboxMessage);
     }
 
     @Transactional

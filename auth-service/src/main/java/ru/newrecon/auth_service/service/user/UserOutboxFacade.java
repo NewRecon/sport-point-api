@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.auth_service.entity.OutboxMessage;
 import ru.newrecon.auth_service.entity.User;
 import ru.newrecon.auth_service.enums.OutboxMessageEventType;
 import ru.newrecon.auth_service.kafka.payload.CreateUserPayload;
@@ -22,10 +21,9 @@ public class UserOutboxFacade {
     public void saveCreateUserEvent(User user, String email) {
         UUID idempotencyKey = UUID.randomUUID();
         String payload = objectMapper.writeValueAsString(buildCreateUserPayload(user, email));
-        OutboxMessage outboxMessage = outboxMessageService.create(
+        outboxMessageService.create(
             user.getId(), payload, idempotencyKey, OutboxMessageEventType.CREATE
         );
-        outboxMessageService.save(outboxMessage);
     }
 
     private CreateUserPayload buildCreateUserPayload(User user, String email) {

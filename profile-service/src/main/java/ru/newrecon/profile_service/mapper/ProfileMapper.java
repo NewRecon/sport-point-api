@@ -8,7 +8,8 @@ import org.mapstruct.Mapping;
 import ru.newrecon.profile_service.config.MapstructConfig;
 import ru.newrecon.profile_service.dto.CreateProfileRq;
 import ru.newrecon.profile_service.dto.CreateProfileRs;
-import ru.newrecon.profile_service.dto.GetProfileRs;
+import ru.newrecon.profile_service.dto.GetProfileViewRs;
+import ru.newrecon.profile_service.dto.ProfileViewDto;
 import ru.newrecon.profile_service.dto.UpdateProfileRq;
 import ru.newrecon.profile_service.dto.UpdateProfileRs;
 import ru.newrecon.profile_service.entity.Profile;
@@ -28,5 +29,5 @@ public interface ProfileMapper {
 
     UpdateProfileRs mapToUpdateProfileRs(Profile source);
 
-    GetProfileRs mapToGetProfileRs(Profile source);
+    GetProfileViewRs mapToGetProfileRs(ProfileViewDto source);
 }

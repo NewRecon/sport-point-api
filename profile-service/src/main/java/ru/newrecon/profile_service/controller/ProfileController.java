@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import ru.newrecon.profile_service.dto.CreateProfileRq;
 import ru.newrecon.profile_service.dto.CreateProfileRs;
-import ru.newrecon.profile_service.dto.GetProfileRs;
+import ru.newrecon.profile_service.dto.GetProfileViewRs;
 import ru.newrecon.profile_service.dto.UpdateProfileRq;
 import ru.newrecon.profile_service.dto.UpdateProfileRs;
 import ru.newrecon.profile_service.mapper.ProfileMapper;
+import ru.newrecon.profile_service.service.ProfileFacade;
 import ru.newrecon.profile_service.service.ProfileService;
 
 @RestController
@@ -29,26 +30,27 @@ import ru.newrecon.profile_service.service.ProfileService;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final ProfileFacade profileFacade;
     private final ProfileMapper profileMapper;
 
     @GetMapping
-    public GetProfileRs get(@AuthenticationPrincipal UUID id) {
+    public GetProfileViewRs get(@AuthenticationPrincipal UUID id) {
         return profileMapper.mapToGetProfileRs(
-            profileService.getByUserId(id)
+            profileFacade.getByUserId(id)
         );
     }
     
     @GetMapping("/{id}")
-    public GetProfileRs getById(@PathVariable UUID id) {
+    public GetProfileViewRs getById(@PathVariable UUID id) {
         return profileMapper.mapToGetProfileRs(
-            profileService.getById(id)
+            profileFacade.getById(id)
         );
     }
 
     @GetMapping("/user/{userId}")
-    public GetProfileRs getByUserId(@PathVariable UUID userId) {
+    public GetProfileViewRs getByUserId(@PathVariable UUID userId) {
         return profileMapper.mapToGetProfileRs(
-            profileService.getByUserId(userId)
+            profileFacade.getByUserId(userId)
         );
     }
     

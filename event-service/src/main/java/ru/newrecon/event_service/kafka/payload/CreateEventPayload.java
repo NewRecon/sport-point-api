@@ -6,5 +6,6 @@ public record CreateEventPayload(
     UUID eventId,
     UUID userId,
     int totalParticipants,
-    boolean isCreatorParticipant
+    boolean isCreatorParticipant,
+    String eventTitle
 ) {}

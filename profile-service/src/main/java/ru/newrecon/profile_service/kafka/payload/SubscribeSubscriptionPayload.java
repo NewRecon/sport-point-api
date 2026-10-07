@@ -1,4 +1,4 @@
-package ru.newrecon.subscription_service.kafka.payload;
+package ru.newrecon.profile_service.kafka.payload;
 
 import java.util.UUID;
 

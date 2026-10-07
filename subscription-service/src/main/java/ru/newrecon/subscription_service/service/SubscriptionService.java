@@ -32,8 +32,7 @@ public class SubscriptionService {
         return subscriptionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Не найдена подписка с id : " + id));
     }
-
-    // TODO воняет
+    
     @Transactional
     public void create(CreateEventPayload createEventPayload) {
 
@@ -63,7 +62,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public void subscribe(UUID userId, UUID eventId, String name) {
+    public void subscribe(UUID userId, UUID eventId, String name, String eventTitle) {
         if (subscriptionRepository.existsByEventIdAndUserId(eventId, userId)) {
             throw new UserAlreadySubscribeException("Пользователь уже записан на ивент " + userId);
         }
@@ -82,7 +81,7 @@ public class SubscriptionService {
 
         subscriptionRepository.save(subscription);
 
-        subscriptionOutboxFacade.saveSubscribeSubscriptionEvent(subscription, name);
+        subscriptionOutboxFacade.saveSubscribeSubscriptionEvent(subscription, name, eventTitle);
     }
 
     @Transactional

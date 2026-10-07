@@ -33,7 +33,6 @@ public class ProfileService {
         return profileRepository.save(profile);
     }
 
-    // TODO воняет
     public void create(CreateUserPayload createUserDto) {
         Profile profile = new Profile();
         profile.setUserId(createUserDto.userId());
@@ -41,7 +40,7 @@ public class ProfileService {
         profile.setName(createUserDto.name());
         profile.setEmail(createUserDto.email());
         
-        save(profile);
+        profileRepository.save(profile);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)

@@ -53,7 +53,7 @@ public class SubscriptionController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribe(@AuthenticationPrincipal PrincipalDto principal, @RequestBody SubscribeRq subscribeRq) {
-        subscriptionService.subscribe(principal.userId(), subscribeRq.eventId(), principal.name());
+        subscriptionService.subscribe(principal.userId(), subscribeRq.eventId(), principal.name(), subscribeRq.eventTitle());
 
         return ResponseEntity.ok().build();
     }

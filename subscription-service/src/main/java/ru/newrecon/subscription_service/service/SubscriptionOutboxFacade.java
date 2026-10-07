@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import ru.newrecon.subscription_service.entity.OutboxMessage;
 import ru.newrecon.subscription_service.entity.Subscription;
 import ru.newrecon.subscription_service.enums.OutboxMessageEventType;
 import ru.newrecon.subscription_service.kafka.payload.SubscribeSubscriptionPayload;
@@ -19,18 +18,17 @@ public class SubscriptionOutboxFacade {
     private final OutboxMessageService outboxMessageService;
     private final ObjectMapper objectMapper;
 
-    public void saveSubscribeSubscriptionEvent(Subscription subscription, String name) {
+    public void saveSubscribeSubscriptionEvent(Subscription subscription, String name, String eventTitle) {
         UUID idempotencyKey = UUID.randomUUID();
-        String payload = objectMapper.writeValueAsString(buidSubscribeSubscriptionPayload(subscription, name));
-        OutboxMessage outboxMessage = outboxMessageService.create(
+        String payload = objectMapper.writeValueAsString(buidSubscribeSubscriptionPayload(subscription, name, eventTitle));
+        outboxMessageService.create(
             subscription.getId(), payload, idempotencyKey, OutboxMessageEventType.SUBSCRIBE
         );
-        outboxMessageService.save(outboxMessage);
     }
 
-    private SubscribeSubscriptionPayload buidSubscribeSubscriptionPayload(Subscription subscription, String name) {
+    private SubscribeSubscriptionPayload buidSubscribeSubscriptionPayload(Subscription subscription, String name, String eventTitle) {
         return new SubscribeSubscriptionPayload(
-            subscription.getUserId(), subscription.getEventId(), name
+            subscription.getUserId(), subscription.getEventId(), name, eventTitle
         );
     }
 }

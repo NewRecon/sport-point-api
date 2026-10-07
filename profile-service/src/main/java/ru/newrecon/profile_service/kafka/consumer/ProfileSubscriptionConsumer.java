@@ -18,22 +18,22 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.newrecon.profile_service.entity.InboxMessage;
-import ru.newrecon.profile_service.entity.Profile;
-import ru.newrecon.profile_service.kafka.payload.CreateUserPayload;
+import ru.newrecon.profile_service.kafka.payload.CreateEventPayload;
+import ru.newrecon.profile_service.kafka.payload.SubscribeSubscriptionPayload;
 import ru.newrecon.profile_service.repository.InboxMessageRepository;
-import ru.newrecon.profile_service.service.ProfileService;
+import ru.newrecon.profile_service.service.ProfileEventService;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ProfileUserConsumer {
+public class ProfileSubscriptionConsumer {
 
-    private final ObjectMapper kafkObjectMapper;
-    private final ProfileService profileService;
+    private final ProfileEventService profileEventService;
     private final InboxMessageRepository inboxMessageRepository;
-
+    private final ObjectMapper kafkObjectMapper;
+    
     @RetryableTopic(attempts = "3", 
         backOff = @BackOff(delay = 2000, multiplier = 2.0),
         topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
@@ -46,13 +46,13 @@ public class ProfileUserConsumer {
             ClassCastException.class,
             IllegalStateException.class
         })
-    @KafkaListener(topics = "create-user-events")
+    @KafkaListener(topics = "subscribe-subscription-events")
     public void listenCreateUser(
             String message,
             Acknowledgment ack,
             @Header(name = "idempotency-key", required = false) byte[] idempotencyKeyBytes
     ) {
-        log.info("Получено сообщение из create-user-events : " + message);
+         log.info("Получено сообщение из subscribe-subscription-events : " + message);
 
         if (idempotencyKeyBytes == null || idempotencyKeyBytes.length == 0) {
             throw new IllegalArgumentException("Отсутствует заголовок idempotency-key, сообщение уходит в DLT");
@@ -71,8 +71,8 @@ public class ProfileUserConsumer {
             return;
         }
 
-        CreateUserPayload createUserDto = kafkObjectMapper.readValue(message, CreateUserPayload.class);
-        profileService.create(createUserDto);
+        SubscribeSubscriptionPayload subscribeSubscriptionPayload = kafkObjectMapper.readValue(message, SubscribeSubscriptionPayload.class);
+        profileEventService.create(subscribeSubscriptionPayload);
     }
 
     @DltHandler

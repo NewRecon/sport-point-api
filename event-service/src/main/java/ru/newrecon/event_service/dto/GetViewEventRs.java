@@ -15,5 +15,5 @@ public record GetViewEventRs(
     UUID ownerId,
     String ownerName,
     int totalParticipants,
-    List<EventSubscriptionViewDto> eventSubscriptions
+    List<GetEventSubscriptionViewRs> eventSubscriptions
 ) {}
