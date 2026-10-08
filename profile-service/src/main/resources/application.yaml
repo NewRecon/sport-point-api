@@ -1,40 +1,40 @@
 server:
   port: 8083
-  
+
 spring:
-    servlet:
-        multipart:
-            enabled: true
-            max-file-size: 10485760
-            max-request-size: 10485760
-    application:
-        name: profile-service
-    datasource:
-        url: jdbc:postgresql://profile-db:5432/profiledb
-        username: postgres
-        password: postgres
-        driver-class-name: org.postgresql.Driver
-    jackson:
-        time-zone: "Europe/Moscow"
-    jpa:
-        hibernate:
-            ddl-auto: create-drop
-        show-sql: true
-    kafka:
-        bootstrap-servers: kafka:9092
-        consumer:
-            group-id: profile-user-group
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            security:
-                protocol: PLAINTEXT
-            enable-auto-commit: false
-        listener:
-            ack-mode: manual_immediate
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10485760
+      max-request-size: 10485760
+  application:
+    name: profile-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://profile-db:5432/profiledb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jackson:
+    time-zone: "Europe/Moscow"
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      group-id: profile-user-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      security:
+        protocol: PLAINTEXT
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual_immediate
 
 rustfs:
-  endpoint: http://rustfs:9000
-  access-key: rustfsadmin
-  secret-key: rustfsadmin
-  bucket-name: avatars
+  endpoint: ${RUSTFS_ENDPOINT:http://rustfs:9000}
+  access-key: ${RUSTFS_ACCESS_KEY:rustfsadmin}
+  secret-key: ${RUSTFS_SECRET_KEY:rustfsadmin}
+  bucket-name: ${RUSTFS_BUCKET_NAME:avatars}

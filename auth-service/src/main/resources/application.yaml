@@ -1,36 +1,36 @@
 server:
   port: 8081
-  
+
 spring:
-    application:
-        name: auth-service
-    datasource:
-        url: jdbc:postgresql://auth-db:5432/authdb
-        username: postgres
-        password: postgres
-        driver-class-name: org.postgresql.Driver
-    jackson:
-        time-zone: "Europe/Moscow"
-    jpa:
-        hibernate:
-            ddl-auto: create-drop
-        show-sql: true
-    kafka:
-        bootstrap-servers: kafka:9092
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.apache.kafka.common.serialization.StringSerializer
-            security:
-                protocol: PLAINTEXT
+  application:
+    name: auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://auth-db:5432/authdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jackson:
+    time-zone: "Europe/Moscow"
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      security:
+        protocol: PLAINTEXT
 
 jwt:
-    key: my-super-secret-test-key-for-jwt
-    expiration: 43200000
+  key: ${JWT_KEY:my-super-secret-test-key-for-jwt}
+  expiration: ${JWT_EXPIRATION:43200000}
 
 outbox:
-    scheduler:
-        send-delay-ms: 1000
-        delete-crone: "0 */1 * * * *"
-    batch-size: 10
-    max-attemt: 5
-    attempt-delay-sec: 3600
+  scheduler:
+    send-delay-ms: ${OUTBOX_SEND_DELAY_MS:1000}
+    delete-crone: ${OUTBOX_DELETE_CRON:0 */1 * * * *}
+  batch-size: ${OUTBOX_BATCH_SIZE:10}
+  max-attemt: ${OUTBOX_MAX_ATTEMPT:5}
+  attempt-delay-sec: ${OUTBOX_ATTEMPT_DELAY_SEC:3600}

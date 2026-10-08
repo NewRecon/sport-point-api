@@ -1,46 +1,46 @@
 server:
   port: 8082
-  
+
 spring:
-    application:
-        name: event-service
-    datasource:
-        url: jdbc:postgresql://event-db:5432/eventdb
-        username: postgres
-        password: postgres
-        driver-class-name: org.postgresql.Driver
-    jackson:
-        time-zone: "Europe/Moscow"
-    jpa:
-        hibernate:
-            ddl-auto: create-drop
-        show-sql: true
-    kafka:
-        bootstrap-servers: kafka:9092
-        producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.apache.kafka.common.serialization.StringSerializer
-            security:
-                protocol: PLAINTEXT
-        consumer:
-            group-id: event-subscription-group
-            auto-offset-reset: earliest
-            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-            security:
-                protocol: PLAINTEXT
-            enable-auto-commit: false
-        listener:
-            ack-mode: manual_immediate
+  application:
+    name: event-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://event-db:5432/eventdb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jackson:
+    time-zone: "Europe/Moscow"
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      security:
+        protocol: PLAINTEXT
+    consumer:
+      group-id: event-subscription-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      security:
+        protocol: PLAINTEXT
+      enable-auto-commit: false
+    listener:
+      ack-mode: manual_immediate
 
 scheduler:
-    delete-event:
-        crone: "0 */1 * * * *"
-                
+  delete-event:
+    crone: ${EVENT_DELETE_CRON:0 */1 * * * *}
+
 outbox:
-    scheduler:
-        send-delay-ms: 1000
-        delete-crone: "0 */1 * * * *"
-    batch-size: 10
-    max-attemt: 5
-    attempt-delay-sec: 3600
+  scheduler:
+    send-delay-ms: ${OUTBOX_SEND_DELAY_MS:1000}
+    delete-crone: ${OUTBOX_DELETE_CRON:0 */1 * * * *}
+  batch-size: ${OUTBOX_BATCH_SIZE:10}
+  max-attemt: ${OUTBOX_MAX_ATTEMPT:5}
+  attempt-delay-sec: ${OUTBOX_ATTEMPT_DELAY_SEC:3600}
