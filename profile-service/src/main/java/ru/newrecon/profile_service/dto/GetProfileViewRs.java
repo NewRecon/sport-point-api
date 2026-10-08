@@ -9,6 +9,7 @@ public record GetProfileViewRs(
     UUID userId,
     String bio,
     String email,
+    UUID avatarObjectName,
     List<GetProfileEventRs> profileEventsOwner,
     List<GetProfileEventRs> profileEventsNotOwner
 ) {}

@@ -19,7 +19,6 @@ import ru.newrecon.profile_service.dto.CreateProfileRq;
 import ru.newrecon.profile_service.dto.CreateProfileRs;
 import ru.newrecon.profile_service.dto.GetProfileViewRs;
 import ru.newrecon.profile_service.dto.UpdateProfileRq;
-import ru.newrecon.profile_service.dto.UpdateProfileRs;
 import ru.newrecon.profile_service.mapper.ProfileMapper;
 import ru.newrecon.profile_service.service.ProfileFacade;
 import ru.newrecon.profile_service.service.ProfileService;
@@ -64,20 +63,20 @@ public class ProfileController {
     }
 
     @PutMapping
-    public UpdateProfileRs update(@AuthenticationPrincipal UUID userId, @RequestBody UpdateProfileRq request) {
+    public GetProfileViewRs update(@AuthenticationPrincipal UUID userId, @RequestBody UpdateProfileRq request) {
         return profileMapper.mapToUpdateProfileRs(
-            profileService.update(
+            profileFacade.update(
                 profileMapper.map(userId, request)
             )
         );
     }
 
     @PutMapping("/{id}")
-    public UpdateProfileRs updateById(
+    public GetProfileViewRs updateById(
         @AuthenticationPrincipal UUID userId, @PathVariable UUID id, @RequestBody UpdateProfileRq request
     ) {
         return profileMapper.mapToUpdateProfileRs(
-            profileService.update(
+            profileFacade.update(
                 profileMapper.map(userId, id, request)
             )
         );

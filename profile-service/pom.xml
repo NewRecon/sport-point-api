@@ -16,6 +16,7 @@
 
     <properties>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <rustfs.version>2.55.11</rustfs.version>
     </properties>
 	
 	<dependencies>
@@ -52,6 +53,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${rustfs.version}</version>
         </dependency>
 
 		<dependency>

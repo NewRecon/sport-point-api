@@ -43,15 +43,6 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public Profile update(Profile profile) {
-        Profile currentProfile = getByUserId(profile.getUserId());
-        currentProfile.setBio(profile.getBio());
-        currentProfile.setEmail(profile.getEmail());
-
-        return profileRepository.save(currentProfile);
-    }
-
     public void delete(UUID id) {
         profileRepository.deleteById(id);
     }

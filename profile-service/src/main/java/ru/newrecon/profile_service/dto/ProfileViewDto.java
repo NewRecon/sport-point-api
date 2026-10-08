@@ -11,6 +11,7 @@ public record ProfileViewDto(
     UUID userId,
     String bio,
     String email,
+    UUID avatarObjectName,
     List<ProfileEvent> profileEventsOwner,
     List<ProfileEvent> profileEventsNotOwner
 ) {}

@@ -11,7 +11,6 @@ import ru.newrecon.profile_service.dto.CreateProfileRs;
 import ru.newrecon.profile_service.dto.GetProfileViewRs;
 import ru.newrecon.profile_service.dto.ProfileViewDto;
 import ru.newrecon.profile_service.dto.UpdateProfileRq;
-import ru.newrecon.profile_service.dto.UpdateProfileRs;
 import ru.newrecon.profile_service.entity.Profile;
 
 @Mapper(config = MapstructConfig.class)
@@ -27,7 +26,7 @@ public interface ProfileMapper {
 
     CreateProfileRs mapToCreateProfileRs(Profile source);
 
-    UpdateProfileRs mapToUpdateProfileRs(Profile source);
+    GetProfileViewRs mapToUpdateProfileRs(ProfileViewDto source);
 
     GetProfileViewRs mapToGetProfileRs(ProfileViewDto source);
 }
