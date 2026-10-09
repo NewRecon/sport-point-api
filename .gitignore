@@ -9,7 +9,6 @@ spec/
 project.md
 *.sql
 *.tar.gz
-docker-compose.override.yml
 
 ### STS ###
 .apt_generated

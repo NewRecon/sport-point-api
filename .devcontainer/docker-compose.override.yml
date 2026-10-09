@@ -1,0 +1,25 @@
+services:
+  auth-service:
+    build:
+      context: ../auth-service
+      dockerfile: Dockerfile
+
+  event-service:
+    build:
+      context: ../event-service
+      dockerfile: Dockerfile
+
+  profile-service:
+    build:
+      context: ../profile-service
+      dockerfile: Dockerfile
+
+  subscription-service:
+    build:
+      context: ../subscription-service
+      dockerfile: Dockerfile
+
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: Dockerfile
