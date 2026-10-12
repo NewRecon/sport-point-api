@@ -27,6 +27,20 @@ This repository contains **only the API part** of the project (backend).
 | Security | Spring Security, JWT |
 | Build systems | Maven |
 
+## Services
+
+The backend is split into several microservices, each owning its own data and communicating with the others exclusively through events.
+
+**Gateway Service.** The single entry point for all client requests. It validates the incoming JWT, parses its claims, and injects custom headers (such as user ID, roles, and other identity data) into the requests forwarded to downstream services. This means internal services never deal with token parsing themselves — they simply read trusted headers placed by the gateway, keeping authentication concerns centralized and the downstream services free of security boilerplate.
+
+**Auth Service.** Handles registration and login, issues JWT tokens, and publishes the `UserRegistered` event that triggers cascading operations in the rest of the system. This is the service the client talks to synchronously during registration, before the asynchronous "tail" kicks in.
+
+**Profile Service.** Owns user profile data (display name, bio, interests, sports activity). It consumes user-related events and maintains its own read models, so profile data can be served without querying another services.
+
+**Event Service.** Manages the lifecycle of sports events: creation, editing, and retrieval. It owns the event data and publishes event-related domain events to Kafka for other services to consume.
+
+**Subscription Service.** Handles sign-ups for events, which is the most contended area of the system. It tracks available slots with an atomic counter in Redis, so that dozens or hundreds of simultaneous sign-ups for the same event do not cause row locks or waiting queues. It scales independently and its failure does not affect event creation and reads.
+
 ## Architecture
 
 The platform is built on the principles of **Event-Driven Architecture**, where everything revolves around events. This manifests across four dimensions: interaction, data, reads, and operations.
@@ -36,12 +50,6 @@ The platform is built on the principles of **Event-Driven Architecture**, where 
 **Data.** Each service owns its data following the Database-per-Service principle: databases are not shared, and accessing another service's data is only possible through events. State is transferred via events using the Event-Carried State Transfer (ECST) pattern — an event carries not only the fact that something happened but also the state itself, allowing the recipient to update its data without a callback request to the source. Only immutable fields are denormalized; mutable data is not duplicated, avoiding desynchronization between services.
 
 **Reads and operations.** Writes and reads are separated following CQRS: separate read models (projections) are built from events and updated asynchronously. Distributed business operations follow the Saga pattern in its choreography form — a chain of events without a central orchestrator, where each service reacts to events and publishes its own.
-
-## Subscription Service
-
-Subscriptions are separated into a dedicated service rather than being part of the event service, because they are the most contended area in the system: dozens or hundreds of users may sign up for a single event simultaneously, while the number of slots is limited. Tracking slots in a relational database under such load leads to row locks, waiting queues, and reduced throughput.
-
-The solution is to track available slots with an atomic counter in Redis, with the subscription service working against it synchronously when processing events. Atomicity of the operation is ensured by Redis itself, so row locks and waiting queues do not occur in principle. This allows the subscription service to scale independently of the others and to have its own database, while its failure does not affect event creation and reads — the rest of the system keeps working.
 
 ## Fault Tolerance
 
